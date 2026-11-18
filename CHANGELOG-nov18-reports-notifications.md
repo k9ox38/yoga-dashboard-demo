@@ -33,6 +33,10 @@
 - `Settings.tsx` and `Reconciliation.tsx`: removed the remaining `toISOString()` date stamps.
 - Tests: `src/app/lib/__tests__/reportMetrics.test.ts` covers period ranges, risk-list agreement with the member seed, and notice windows/timestamps.
 - `theme.css`: native `<select>`s get `appearance: none` and a flat chevron. Safari was painting its grey bevelled control inside the bordered box (Packages, Members, Reservations, the card drawer, the modals, Settings and Profile). Selects that already use `appearance-none` with their own chevron icon (Orders, Notifications, Audit Log, Reconciliation) are excluded. Selects also no longer inherit the bold weight of their surrounding `<label>`.
+- Date pickers: every `<input type="date">` is replaced by an in-app calendar (`components/DatePicker.tsx`, built on `react-day-picker`, which was already a dependency). Safari's native popup was dark, in English and showed dd/mm/yyyy.
+  - `DateRangePicker` is used by the filters on Orders, Reconciliation, Audit Log, Reservations and the instructor's 近期排课 tab. It has quick presets (今天 / 近 7 天 / 本月 …), shows two months on desktop and one on phones, and previews the range on hover. Changes apply on 确定.
+  - `DateField` is used by the 排课 date and the notice 发布 / 展示 dates. Picking a day applies it.
+  - Range logic lives in `lib/dateRange.ts`, covered by `lib/__tests__/dateRange.test.ts`. Time fields (`type="time"`) are unchanged; Safari shows them as plain segmented fields with no popup.
 
 ## Still sample / not wired
 

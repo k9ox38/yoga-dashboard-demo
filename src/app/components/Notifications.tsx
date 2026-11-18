@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Search, RefreshCw, Plus, Edit3, Eye, X, Info, ChevronDown, Send, Archive } from "lucide-react";
 import { addDaysFromToday, localDate, localDateTime, parseLocalDate, shiftLocalDateTime } from "../lib/dates";
+import { DateField } from "./DatePicker";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -389,16 +390,16 @@ function NotifModal({ initial, onClose, onSubmit }: {
 
         <div className="grid grid-cols-3 gap-4">
           <MF label="发布时间">
-            <input type="date" value={v.publishedAt?.slice(0,10) ?? ""} disabled={isArchived}
-              onChange={(e) => set("publishedAt", e.target.value)} className={inp(undefined, isArchived)} />
+            <DateField ariaLabel="发布时间" value={v.publishedAt?.slice(0,10) ?? ""} disabled={isArchived}
+              onChange={(day) => set("publishedAt", day)} />
           </MF>
           <MF label="开始展示">
-            <input type="date" value={v.displayStart ?? ""} disabled={isArchived}
-              onChange={(e) => set("displayStart", e.target.value)} className={inp(undefined, isArchived)} />
+            <DateField ariaLabel="开始展示" value={v.displayStart ?? ""} disabled={isArchived}
+              onChange={(day) => set("displayStart", day)} />
           </MF>
           <MF label="结束展示">
-            <input type="date" value={v.displayEnd ?? ""} disabled={isArchived}
-              onChange={(e) => set("displayEnd", e.target.value)} className={inp(undefined, isArchived)} />
+            <DateField ariaLabel="结束展示" value={v.displayEnd ?? ""} disabled={isArchived}
+              onChange={(day) => set("displayEnd", day)} />
           </MF>
         </div>
 

@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
-import { Search, RefreshCw, Plus, X, ChevronDown, ChevronRight, CalendarDays, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { Search, RefreshCw, Plus, X, ChevronDown, ChevronRight, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { useStore } from "../store-context";
 import { localDateTime } from "../lib/dates";
 import { demoOrders, type DemoOrder } from "../lib/demoCommerce";
+import { DateRangePicker } from "./DatePicker";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -388,29 +389,6 @@ function StatCard({ icon, accent, label, value, sub, selected, onClick }: { icon
         <div className="text-xs text-[#6B7280] mt-0.5">{sub}</div>
       </div>
     </button>
-  );
-}
-
-function DateRangePicker({ from, to, onChange }: { from: string; to: string; onChange: (from: string, to: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const [draftFrom, setDraftFrom] = useState(from);
-  const [draftTo, setDraftTo] = useState(to);
-  const label = from || to ? `${from || "开始日期"} → ${to || "结束日期"}` : "开始日期 → 结束日期";
-  return (
-    <div className="relative">
-      <button type="button" onClick={() => { setDraftFrom(from); setDraftTo(to); setOpen(!open); }} className="flex h-9 min-w-[238px] items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 text-sm text-[#6B7280] hover:bg-stone-50">
-        <CalendarDays className="size-4 text-stone-400" /><span>{label}</span>
-      </button>
-      {open && <><button className="fixed inset-0 z-20 cursor-default" aria-label="关闭日期选择" onClick={() => setOpen(false)} /><div className="absolute left-0 top-11 z-30 w-[320px] rounded-xl border border-stone-200 bg-white p-4 shadow-xl">
-        <div className="mb-3 text-sm font-medium text-stone-900">选择日期范围</div>
-        <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
-          <label><span className="mb-1 block text-xs text-[#6B7280]">开始日期</span><input lang="zh-CN" type="date" value={draftFrom} onChange={(event) => setDraftFrom(event.target.value)} className="h-9 w-full rounded-lg border border-stone-200 px-2 text-xs text-stone-700 outline-none focus:border-emerald-500" /></label>
-          <span className="pb-2 text-stone-400">→</span>
-          <label><span className="mb-1 block text-xs text-[#6B7280]">结束日期</span><input lang="zh-CN" type="date" value={draftTo} onChange={(event) => setDraftTo(event.target.value)} className="h-9 w-full rounded-lg border border-stone-200 px-2 text-xs text-stone-700 outline-none focus:border-emerald-500" /></label>
-        </div>
-        <div className="mt-4 flex justify-end gap-2"><button onClick={() => { setDraftFrom(""); setDraftTo(""); onChange("", ""); setOpen(false); }} className="h-8 px-3 text-xs text-stone-600">清除</button><button onClick={() => { onChange(draftFrom, draftTo); setOpen(false); }} className="h-8 rounded-lg bg-emerald-600 px-3 text-xs text-white hover:bg-emerald-700">确定</button></div>
-      </div></>}
-    </div>
   );
 }
 

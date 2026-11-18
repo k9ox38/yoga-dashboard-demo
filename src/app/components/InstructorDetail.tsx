@@ -17,6 +17,7 @@ import {
 import { useStore } from "../store-context";
 import type { ClassSession } from "./data";
 import { Button } from "./ui/button";
+import { DateRangePicker } from "./DatePicker";
 
 type Tab = "近期排课" | "历史课程" | "操作记录";
 
@@ -129,9 +130,7 @@ export function InstructorDetail({ instructorId }: { instructorId: string }) {
         </div>
         {tab === "近期排课" && <>
           <div className="flex flex-wrap items-center gap-3 border-b border-stone-100 px-6 py-4">
-            <input aria-label="开始日期" type="date" value={dateFrom} onChange={(event) => { setDateFrom(event.target.value); setPage(1); }} className="h-9 rounded-lg border border-stone-200 bg-white px-3 text-sm outline-none focus:border-emerald-500" />
-            <span className="text-sm text-stone-400">至</span>
-            <input aria-label="结束日期" type="date" value={dateTo} onChange={(event) => { setDateTo(event.target.value); setPage(1); }} className="h-9 rounded-lg border border-stone-200 bg-white px-3 text-sm outline-none focus:border-emerald-500" />
+            <DateRangePicker direction="upcoming" ariaLabel="排课日期范围" from={dateFrom} to={dateTo} onChange={(from, to) => { setDateFrom(from); setDateTo(to); setPage(1); }} />
             <select aria-label="课程类型" value={courseType} onChange={(event) => { setCourseType(event.target.value); setPage(1); }} className="h-9 rounded-lg border border-stone-200 bg-white px-3 text-sm outline-none focus:border-emerald-500"><option>全部</option><option>团课</option><option>私教</option></select>
             {(dateFrom || dateTo || courseType !== "全部") && <Button variant="ghost" className="h-9 text-stone-500" onClick={() => { setDateFrom(""); setDateTo(""); setCourseType("全部"); setPage(1); }}>重置</Button>}
           </div>

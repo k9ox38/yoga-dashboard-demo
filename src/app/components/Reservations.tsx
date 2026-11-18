@@ -3,6 +3,7 @@ import { CalendarDays, Users, UserRound, Clock3, Plus, Search, ChevronLeft, Chev
 import type { Reservation } from "./data";
 import { useStore } from "../store-context";
 import { MemberCardDrawer } from "./MemberCardDrawer";
+import { DateRangePicker } from "./DatePicker";
 
 const statusLabels: Record<Reservation["status"], string> = { 已确认: "已预约", 已签到: "已完成", 已取消: "已取消", 未到: "缺席" };
 const statusStyles: Record<Reservation["status"], string> = {
@@ -106,7 +107,7 @@ export function Reservations() {
 
       <form className="space-y-5 rounded-xl bg-white p-5 xl:p-6" onSubmit={(event) => { event.preventDefault(); setFilters({ ...draft }); setPage(1); }}>
         <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-2 2xl:grid-cols-[1.65fr_1fr_1fr_1.1fr]">
-          <div className="flex items-center gap-4"><span className="shrink-0 text-sm font-medium">日期</span><div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-lg border border-slate-200 px-3 focus-within:border-booking-primary"><CalendarDays className="hidden size-4 shrink-0 text-slate-500 sm:block" /><input aria-label="开始日期" type="date" value={draft.start} onChange={(event) => setDraft({ ...draft, start: event.target.value })} className="min-w-0 flex-1 bg-transparent text-sm outline-none" /><span className="text-xs text-slate-500">至</span><input aria-label="结束日期" type="date" min={draft.start || undefined} value={draft.end} onChange={(event) => setDraft({ ...draft, end: event.target.value })} className="min-w-0 flex-1 bg-transparent text-sm outline-none" /></div></div>
+          <div className="flex items-center gap-4"><span className="shrink-0 text-sm font-medium">日期</span><DateRangePicker ariaLabel="预约日期范围" presets={["今天", "昨天", "本周", "下周", "本月"]} from={draft.start} to={draft.end} onChange={(start, end) => setDraft({ ...draft, start, end })} className="h-11 min-w-0 flex-1 border-slate-200" /></div>
           <label className="flex items-center gap-4"><span className="shrink-0 text-sm">课程类型</span><select className={`${inputClass} flex-1`} value={draft.type} onChange={(event) => setDraft({ ...draft, type: event.target.value })}>{["全部", "小班课", "私教课"].map((type) => <option key={type}>{type}</option>)}</select></label>
           <label className="flex items-center gap-4"><span className="shrink-0 text-sm">老师</span><select className={`${inputClass} flex-1`} value={draft.teacher} onChange={(event) => setDraft({ ...draft, teacher: event.target.value })}><option>全部</option>{instructors.map((item) => <option key={item.id}>{item.name}</option>)}</select></label>
           <label className="flex items-center gap-4"><span className="shrink-0 text-sm">预约状态</span><select className={`${inputClass} flex-1`} value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value })}><option>全部</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>

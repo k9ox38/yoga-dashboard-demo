@@ -5,6 +5,7 @@ import { ROOMS } from "./data";
 import type { BookingEligibility } from "../store";
 import { useStore } from "../store-context";
 import { MemberCardDrawer } from "./MemberCardDrawer";
+import { DateField } from "./DatePicker";
 
 function makeEmpty(): ClassSession {
   return {
@@ -116,9 +117,9 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
             </select>
           </Field>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-[1.4fr_1fr_1fr] gap-4">
             <Field label="日期" error={errors.date}>
-              <input type="date" value={values.date} onChange={(e) => set("date", e.target.value)} className={inputCls(errors.date)} />
+              <DateField ariaLabel="日期" value={values.date} onChange={(day) => set("date", day)} invalid={Boolean(errors.date)} />
             </Field>
             <Field label="开始时间">
               <input type="time" value={values.start} onChange={(e) => set("start", e.target.value)} className={inputCls()} />

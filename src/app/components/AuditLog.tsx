@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { RefreshCw, X, ChevronDown, Eye, Shield, Activity, Users, Layers } from "lucide-react";
+import { DateRangePicker } from "./DatePicker";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -127,11 +128,7 @@ export function AuditLog() {
           <option value="">全部对象类型</option>
           {(["会员","教练","课程","排课","预约","套餐","订单","通知","系统配置"] as ObjectType[]).map(o => <option key={o}>{o}</option>)}
         </Sel>
-        <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-          className="h-9 px-3 rounded-lg border border-stone-200 bg-white text-sm text-stone-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-        <span className="text-stone-400 text-sm">—</span>
-        <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-          className="h-9 px-3 rounded-lg border border-stone-200 bg-white text-sm text-stone-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
+        <DateRangePicker from={dateFrom} to={dateTo} onChange={(from, to) => { setDateFrom(from); setDateTo(to); }} />
         <div className="flex-1" />
         <button onClick={() => { setFAction(""); setFObject(""); setDateFrom(""); setDateTo(""); }}
           className="h-9 px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm text-stone-600 flex items-center gap-1.5">
