@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { RefreshCw, Upload, Zap, X, ChevronDown, Eraser, Eye, Link2, FileText } from "lucide-react";
 import { demoReconRecords, ordersRefFromDemo, type DemoReconRecord } from "../lib/demoCommerce";
+import { localDateTime } from "../lib/dates";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -135,7 +136,7 @@ export function Reconciliation() {
   /* Import */
   const doImport = (channel: Channel, csv: string) => {
     const lines = csv.trim().split("\n").filter(l => l.trim());
-    const now = new Date().toISOString().slice(0,16).replace("T"," ");
+    const now = localDateTime();
     const imported: ReconRecord[] = lines.map((line, i) => {
       const parts = line.split(",");
       return {

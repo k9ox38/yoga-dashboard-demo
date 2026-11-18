@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Plus, X, Upload, Pencil, Trash2, ChevronRight, GripVertical } from "lucide-react";
+import { localDate } from "../lib/dates";
 
 type Tab = "brand" | "booking" | "package" | "points" | "homepage" | "advanced";
 
@@ -292,7 +293,7 @@ function AdvancedSection() {
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState<ConfigEntry>({ key: "", value: "", updatedAt: "" });
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
 
   const saveEdit = () => {
     if (!draft.key.trim()) return;

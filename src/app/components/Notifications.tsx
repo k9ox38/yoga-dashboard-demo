@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Search, RefreshCw, Plus, Edit3, Eye, X, Info, ChevronDown, Send, Archive } from "lucide-react";
+import { addDaysFromToday, localDate, localDateTime, parseLocalDate, shiftLocalDateTime } from "../lib/dates";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -7,7 +8,7 @@ type NotifStatus  = "草稿" | "已发布" | "已归档";
 type Priority     = "高" | "中" | "低";
 type LinkType     = "不跳转" | "小程序页面" | "外部链接";
 
-interface Notif {
+export interface Notif {
   id: string;
   title: string;
   content: string;
@@ -30,64 +31,95 @@ type ModalState =
 
 /* ─── Seed data ──────────────────────────────────── */
 
-const INIT: Notif[] = [
-  {
-    id: "n1", title: "【重要】6月馆所营业调整公告",
-    content: "因场地维护需要，6月28日（周日）全天暂停营业。已预约当日课程的会员将收到短信通知，课时不扣除。",
-    status: "已发布", priority: "高", displayPosition: "首页通知条",
-    publishedAt: "2026-06-18 10:00", displayStart: "2026-06-18", displayEnd: "2026-06-28",
-    updatedAt: "2026-06-18 10:00", linkType: "不跳转",
-  },
-  {
-    id: "n2", title: "暑期特惠套餐上线，限时 8 折",
-    content: "7月1日起，所有课时包享受 8 折优惠，月卡不参与活动。活动有效期至 7月31日。",
-    status: "已发布", priority: "高", displayPosition: "首页通知条",
-    publishedAt: "2026-06-20 09:00", displayStart: "2026-07-01", displayEnd: "2026-07-31",
-    updatedAt: "2026-06-20 09:00", linkType: "小程序页面", linkUrl: "/pages/packages/index",
-  },
-  {
-    id: "n3", title: "新教练苏菲娅空中吊绳课开课",
-    content: "新晋教练苏菲娅将开设空中吊绳专项课，每周二、四晚 19:00 开课，名额有限，欢迎提前预约。",
-    status: "已发布", priority: "中", displayPosition: "首页通知条",
-    publishedAt: "2026-06-15 14:00", displayStart: "2026-06-15", displayEnd: "2026-07-15",
-    updatedAt: "2026-06-15 14:00", linkType: "小程序页面", linkUrl: "/pages/schedule/index",
-  },
-  {
-    id: "n4", title: "系统维护通知 — 6月25日凌晨",
-    content: "小程序将于6月25日凌晨 2:00–4:00 进行系统维护，期间无法预约课程，请提前安排。",
-    status: "草稿", priority: "高", displayPosition: "首页通知条",
-    displayStart: "2026-06-24", displayEnd: "2026-06-25",
-    updatedAt: "2026-06-21 16:30", linkType: "不跳转",
-  },
-  {
-    id: "n5", title: "会员积分规则更新说明",
-    content: "自7月1日起，购卡积分比例由原 1% 调整为 1.5%，推荐积分保持不变。请会员知悉。",
-    status: "草稿", priority: "中", displayPosition: "首页通知条",
-    displayStart: "2026-07-01", displayEnd: "2026-07-31",
-    updatedAt: "2026-06-20 11:00", linkType: "不跳转",
-  },
-  {
-    id: "n6", title: "端午节放假通知",
-    content: "端午节期间（5月31日–6月2日）正常营业，课程表不变，欢迎预约练习。",
-    status: "已归档", priority: "低", displayPosition: "首页通知条",
-    publishedAt: "2026-05-28 09:00", displayStart: "2026-05-28", displayEnd: "2026-06-02",
-    updatedAt: "2026-06-03 09:00", linkType: "不跳转",
-  },
-  {
-    id: "n7", title: "劳动节促销活动结束",
-    content: "劳动节套餐特惠活动已于5月7日结束，感谢各位会员的参与与支持。",
-    status: "已归档", priority: "低", displayPosition: "首页通知条",
-    publishedAt: "2026-04-28 10:00", displayStart: "2026-04-28", displayEnd: "2026-05-07",
-    updatedAt: "2026-05-08 10:00", linkType: "不跳转",
-  },
-  {
-    id: "n8", title: "新版小程序上线，体验全面升级",
-    content: "新版小程序已正式上线，支持快速预约、积分查询、课表订阅等功能，欢迎体验并反馈意见。",
-    status: "已归档", priority: "中", displayPosition: "首页通知条",
-    publishedAt: "2026-04-01 09:00", displayStart: "2026-04-01", displayEnd: "2026-04-30",
-    updatedAt: "2026-04-30 18:00", linkType: "外部链接", linkUrl: "https://example.com/release-notes",
-  },
-];
+const WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+const cnDay = (day: string) => { const d = parseLocalDate(day); return `${d.getMonth() + 1}月${d.getDate()}日`; };
+const cnWeekday = (day: string) => WEEKDAYS[parseLocalDate(day).getDay()];
+/** Minute-precision local timestamp ("YYYY-MM-DD HH:mm"), never UTC. */
+const nowStamp = () => localDateTime().slice(0, 16);
+
+/** Demo notices dated relative to `today`, so published ones are always inside their display window. */
+export function buildSeedNotices(today: Date = new Date()): Notif[] {
+  const day = (offset: number) => addDaysFromToday(offset, today);
+  const at = (offset: number, time: string) => shiftLocalDateTime(offset, `${time}:00`, today).slice(0, 16);
+  const closure = day(10);
+  const promoStart = day(-5);
+  const promoEnd = day(25);
+  const maintenance = day(7);
+  const pointsStart = localDate(new Date(today.getFullYear(), today.getMonth() + 1, 1, 12));
+  const pointsEnd = localDate(new Date(today.getFullYear(), today.getMonth() + 2, 0, 12));
+  return [
+    {
+      id: "n1", title: `【重要】${cnDay(closure)}场馆维护暂停营业`,
+      content: `因场地维护需要，${cnDay(closure)}（${cnWeekday(closure)}）全天暂停营业。已预约当日课程的会员将收到短信通知，课时不扣除。`,
+      status: "已发布", priority: "高", displayPosition: "首页通知条",
+      publishedAt: at(-2, "10:00"), displayStart: day(-2), displayEnd: closure,
+      updatedAt: at(-2, "10:00"), linkType: "不跳转",
+    },
+    {
+      id: "n2", title: "课时包限时 8 折",
+      content: `${cnDay(promoStart)}起，所有课时包享受 8 折优惠，月卡不参与活动。活动有效期至 ${cnDay(promoEnd)}。`,
+      status: "已发布", priority: "高", displayPosition: "首页通知条",
+      publishedAt: at(-6, "09:00"), displayStart: promoStart, displayEnd: promoEnd,
+      updatedAt: at(-6, "09:00"), linkType: "小程序页面", linkUrl: "/pages/packages/index",
+    },
+    {
+      id: "n3", title: "「产前产后」课程开放预约",
+      content: "谭美老师的产前产后温和练习课每周开课，每节限 12 人，名额有限，欢迎提前预约。",
+      status: "已发布", priority: "中", displayPosition: "首页通知条",
+      publishedAt: at(-7, "14:00"), displayStart: day(-7), displayEnd: day(21),
+      updatedAt: at(-7, "14:00"), linkType: "小程序页面", linkUrl: "/pages/schedule/index",
+    },
+    {
+      id: "n4", title: `系统维护通知 — ${cnDay(maintenance)}凌晨`,
+      content: `小程序将于${cnDay(maintenance)}凌晨 2:00–4:00 进行系统维护，期间无法预约课程，请提前安排。`,
+      status: "草稿", priority: "高", displayPosition: "首页通知条",
+      displayStart: day(6), displayEnd: maintenance,
+      updatedAt: at(-1, "16:30"), linkType: "不跳转",
+    },
+    {
+      id: "n5", title: "会员积分规则更新说明",
+      content: `自${cnDay(pointsStart)}起，购卡积分比例由原 1% 调整为 1.5%，推荐积分保持不变。请会员知悉。`,
+      status: "草稿", priority: "中", displayPosition: "首页通知条",
+      displayStart: pointsStart, displayEnd: pointsEnd,
+      updatedAt: at(-2, "11:00"), linkType: "不跳转",
+    },
+    {
+      id: "n6", title: "A 馆地板翻新，部分课程调整场地",
+      content: `${cnDay(day(-33))}–${cnDay(day(-26))} 期间 A 馆地板翻新，部分课程改至 B 馆上课，请以小程序课表为准。`,
+      status: "已归档", priority: "低", displayPosition: "首页通知条",
+      publishedAt: at(-34, "09:00"), displayStart: day(-34), displayEnd: day(-26),
+      updatedAt: at(-25, "09:00"), linkType: "不跳转",
+    },
+    {
+      id: "n7", title: "课时包促销活动结束",
+      content: `课时包特惠活动已于${cnDay(day(-50))}结束，感谢各位会员的参与与支持。`,
+      status: "已归档", priority: "低", displayPosition: "首页通知条",
+      publishedAt: at(-60, "10:00"), displayStart: day(-60), displayEnd: day(-50),
+      updatedAt: at(-49, "10:00"), linkType: "不跳转",
+    },
+    {
+      id: "n8", title: "新版小程序上线，体验全面升级",
+      content: "新版小程序已正式上线，支持快速预约、积分查询、课表订阅等功能，欢迎体验并反馈意见。",
+      status: "已归档", priority: "中", displayPosition: "首页通知条",
+      publishedAt: at(-90, "09:00"), displayStart: day(-90), displayEnd: day(-61),
+      updatedAt: at(-61, "18:00"), linkType: "外部链接", linkUrl: "https://example.com/release-notes",
+    },
+  ];
+}
+
+/** Whether a published notice is currently in its display window. */
+export type DisplayState = "展示中" | "未开始" | "已结束";
+export function displayState(n: Pick<Notif, "displayStart" | "displayEnd">, today: string = localDate()): DisplayState {
+  if (n.displayStart && today < n.displayStart) return "未开始";
+  if (n.displayEnd && today > n.displayEnd) return "已结束";
+  return "展示中";
+}
+
+const displayStateBadge: Record<DisplayState, string> = {
+  "展示中": "bg-emerald-50 text-emerald-700",
+  "未开始": "bg-stone-100 text-stone-500",
+  "已结束": "bg-amber-50 text-amber-700",
+};
 
 /* ─── Style maps ─────────────────────────────────── */
 
@@ -106,12 +138,13 @@ const priorityBadge: Record<Priority, string> = {
 /* ─── Main component ─────────────────────────────── */
 
 export function Notifications() {
-  const [notifs, setNotifs]     = useState<Notif[]>(INIT);
+  const [notifs, setNotifs]     = useState<Notif[]>(() => buildSeedNotices());
   const [modal, setModal]       = useState<ModalState>({ kind: "none" });
   const [search, setSearch]     = useState("");
   const [fStatus, setFStatus]   = useState<"" | NotifStatus>("");
-  const [interval, setInterval] = useState(4);
+  const [bannerInterval, setBannerInterval] = useState(4);
   const [justSaved, setJustSaved] = useState(false);
+  const todayKey = localDate();
 
   const filtered = useMemo(() => notifs.filter((n) => {
     if (fStatus && n.status !== fStatus) return false;
@@ -124,17 +157,18 @@ export function Notifications() {
     setNotifs(prev => prev.some(x => x.id === n.id) ? prev.map(x => x.id === n.id ? n : x) : [n, ...prev]);
 
   const publish = (n: Notif) => {
-    upsert({ ...n, status: "已发布", publishedAt: new Date().toISOString().slice(0, 16).replace("T", " "), updatedAt: new Date().toISOString().slice(0, 16).replace("T", " ") });
+    const stamp = nowStamp();
+    upsert({ ...n, status: "已发布", publishedAt: stamp, updatedAt: stamp });
     setModal({ kind: "none" });
   };
 
   const archive = (n: Notif) => {
-    upsert({ ...n, status: "已归档", updatedAt: new Date().toISOString().slice(0, 16).replace("T", " ") });
+    upsert({ ...n, status: "已归档", updatedAt: nowStamp() });
     setModal({ kind: "none" });
   };
 
   const changeInterval = (next: number) => {
-    setInterval(Math.min(30, Math.max(1, next)));
+    setBannerInterval(Math.min(30, Math.max(1, next)));
     setJustSaved(true);
     setTimeout(() => setJustSaved(false), 2000);
   };
@@ -157,7 +191,7 @@ export function Notifications() {
           {(["草稿","已发布","已归档"] as NotifStatus[]).map(s => <option key={s}>{s}</option>)}
         </Sel>
         <div className="flex-1" />
-        <button onClick={() => { setNotifs(INIT); setSearch(""); setFStatus(""); }} className="h-9 px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm text-stone-600 flex items-center gap-1.5">
+        <button onClick={() => { setNotifs(buildSeedNotices()); setSearch(""); setFStatus(""); }} className="h-9 px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm text-stone-600 flex items-center gap-1.5">
           <RefreshCw className="w-3.5 h-3.5" /> 刷新
         </button>
         <button onClick={() => setModal({ kind: "edit", notif: null })} className="h-9 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm flex items-center gap-1.5">
@@ -174,9 +208,9 @@ export function Notifications() {
         <div className="ml-auto flex shrink-0 items-center gap-2 text-sm text-[#6B7280]">
           <span>切换间隔</span>
           <div className="flex h-8 w-[120px] items-center overflow-hidden rounded-lg bg-white">
-            <button type="button" disabled={interval <= 1} onClick={() => changeInterval(interval - 1)} className="h-full w-9 text-base text-stone-500 hover:bg-stone-50 disabled:opacity-35">−</button>
-            <span className="flex-1 text-center font-medium tabular-nums text-stone-800">{interval}</span>
-            <button type="button" disabled={interval >= 30} onClick={() => changeInterval(interval + 1)} className="h-full w-9 text-base text-stone-500 hover:bg-stone-50 disabled:opacity-35">+</button>
+            <button type="button" disabled={bannerInterval <= 1} onClick={() => changeInterval(bannerInterval - 1)} className="h-full w-9 text-base text-stone-500 hover:bg-stone-50 disabled:opacity-35">−</button>
+            <span className="flex-1 text-center font-medium tabular-nums text-stone-800">{bannerInterval}</span>
+            <button type="button" disabled={bannerInterval >= 30} onClick={() => changeInterval(bannerInterval + 1)} className="h-full w-9 text-base text-stone-500 hover:bg-stone-50 disabled:opacity-35">+</button>
           </div>
           <span>秒</span>
           <span className={`w-14 text-xs text-[#6B7280] transition-opacity ${justSaved ? "opacity-100" : "opacity-0"}`}>已保存 ✓</span>
@@ -205,6 +239,7 @@ export function Notifications() {
             <span><Badge cls={priorityBadge[n.priority]}>{n.priority}</Badge></span>
             <div className="group/time relative w-fit text-xs text-[#6B7280]">
               <span title={`发布于 ${n.publishedAt?.slice(0, 10) ?? "—"} · 更新于 ${n.updatedAt.slice(0, 10)}`}>{n.displayStart && n.displayEnd ? `${n.displayStart} – ${n.displayEnd}` : "—"}</span>
+              {n.status === "已发布" && (() => { const state = displayState(n, todayKey); return <span className={`ml-2 rounded px-1.5 py-0.5 text-[11px] ${displayStateBadge[state]}`}>{state}</span>; })()}
               <div role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-stone-900 px-3 py-2 text-xs text-white shadow-lg group-hover/time:block">
                 发布于 {n.publishedAt?.slice(0, 10) ?? "—"} · 更新于 {n.updatedAt.slice(0, 10)}
               </div>
@@ -299,7 +334,7 @@ function NotifModal({ initial, onClose, onSubmit }: {
     if ((v.linkType !== "不跳转") && !v.linkUrl?.trim()) e.linkUrl = "请输入跳转地址";
     setErrors(e);
     if (Object.keys(e).length) return;
-    onSubmit({ ...v, updatedAt: new Date().toISOString().slice(0, 16).replace("T", " ") });
+    onSubmit({ ...v, updatedAt: nowStamp() });
   };
 
   return (

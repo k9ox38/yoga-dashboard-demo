@@ -181,35 +181,39 @@ export const packageProducts: PackageProduct[] = [
 type MemberSeed = Omit<Member,
   "notes" | "activities" | "monthlyPackageId" | "monthlyPurchasedAt" | "monthlyActivatedAt" |
   "monthlyFrozen" | "monthlyRefunded" | "privatePackageId" | "privatePurchasedAt" |
-  "privateActivatedAt" | "privateFrozen" | "privateRefunded" | "cardActivities" | "cards" | "expiry"
-> & { expiryDays?: number };
+  "privateActivatedAt" | "privateFrozen" | "privateRefunded" | "cardActivities" | "cards" | "expiry" | "lastClass"
+> & {
+  /** Days from today (negative = past), so seeds never drift as the calendar moves. */
+  expiryDays?: number;
+  lastClassDays?: number;
+};
 
 const memberSeeds: MemberSeed[] = [
-  { id: "M000128", name: "林晓", phone: "138****6201", wechat: true, monthlyStatus: "有效", expiryDays: 22, privateRemaining: 8, frozen: 1, lastClass: "2026-10-27", joinedAt: "2026-09-18" },
+  { id: "M000128", name: "林晓", phone: "138****6201", wechat: true, monthlyStatus: "有效", expiryDays: 22, privateRemaining: 8, frozen: 1, lastClassDays: -2, joinedAt: "2026-09-18" },
   { id: "M000129", name: "陈悦", phone: "139****3816", wechat: false, monthlyStatus: "待激活", privateRemaining: 0, frozen: 0, joinedAt: "2026-10-12" },
-  { id: "M000130", name: "周宁", phone: "137****9052", wechat: true, monthlyStatus: "暂无月卡", privateRemaining: 3, frozen: 2, lastClass: "2026-10-28", joinedAt: "2026-08-06" },
-  { id: "M000131", name: "许晨", phone: "136****4728", wechat: true, monthlyStatus: "已到期", expiryDays: -28, privateRemaining: 0, frozen: 0, lastClass: "2026-10-18", joinedAt: "2026-04-21" },
-  { id: "M000132", name: "苏晴", phone: "135****1839", wechat: true, monthlyStatus: "即将到期", expiryDays: 5, privateRemaining: 2, frozen: 0, lastClass: "2026-10-26", joinedAt: "2026-07-09" },
+  { id: "M000130", name: "周宁", phone: "137****9052", wechat: true, monthlyStatus: "暂无月卡", privateRemaining: 3, frozen: 2, lastClassDays: -1, joinedAt: "2026-08-06" },
+  { id: "M000131", name: "许晨", phone: "136****4728", wechat: true, monthlyStatus: "已到期", expiryDays: -28, privateRemaining: 0, frozen: 0, lastClassDays: -34, joinedAt: "2026-04-21" },
+  { id: "M000132", name: "苏晴", phone: "135****1839", wechat: true, monthlyStatus: "即将到期", expiryDays: 5, privateRemaining: 2, frozen: 0, lastClassDays: -3, joinedAt: "2026-07-09" },
   { id: "M000133", name: "赵清", phone: "138****7512", wechat: false, monthlyStatus: "暂无月卡", privateRemaining: 0, frozen: 0, joinedAt: "2026-10-03" },
-  { id: "M000134", name: "王蕾", phone: "186****2048", wechat: true, monthlyStatus: "有效", expiryDays: 40, privateRemaining: 5, frozen: 0, lastClass: "2026-10-26", joinedAt: "2026-03-11" },
-  { id: "M000135", name: "李然", phone: "157****6093", wechat: true, monthlyStatus: "即将到期", expiryDays: 8, privateRemaining: 1, frozen: 1, lastClass: "2026-10-25", joinedAt: "2026-06-16" },
+  { id: "M000134", name: "王蕾", phone: "186****2048", wechat: true, monthlyStatus: "有效", expiryDays: 40, privateRemaining: 5, frozen: 0, lastClassDays: -4, joinedAt: "2026-03-11" },
+  { id: "M000135", name: "李然", phone: "157****6093", wechat: true, monthlyStatus: "即将到期", expiryDays: 8, privateRemaining: 1, frozen: 1, lastClassDays: -6, joinedAt: "2026-06-16" },
   { id: "M000136", name: "张敏", phone: "188****3472", wechat: false, monthlyStatus: "待激活", privateRemaining: 10, frozen: 0, joinedAt: "2026-10-19" },
-  { id: "M000137", name: "吴桐", phone: "152****8165", wechat: true, monthlyStatus: "有效", expiryDays: 18, privateRemaining: 4, frozen: 0, lastClass: "2026-10-23", joinedAt: "2026-02-08" },
-  { id: "M000138", name: "何静", phone: "133****4920", wechat: true, monthlyStatus: "已到期", expiryDays: -48, privateRemaining: 0, frozen: 0, lastClass: "2026-09-28", joinedAt: "2025-12-20" },
-  { id: "M000139", name: "郑妍", phone: "189****7704", wechat: false, monthlyStatus: "暂无月卡", privateRemaining: 2, frozen: 0, lastClass: "2026-10-21", joinedAt: "2026-09-02" },
-  { id: "M000140", name: "孙菲", phone: "181****3157", wechat: true, monthlyStatus: "有效", expiryDays: 55, privateRemaining: 12, frozen: 2, lastClass: "2026-10-28", joinedAt: "2025-11-12" },
-  { id: "M000141", name: "徐璐", phone: "155****6284", wechat: true, monthlyStatus: "即将到期", expiryDays: 3, privateRemaining: 0, frozen: 0, lastClass: "2026-10-24", joinedAt: "2026-05-19" },
+  { id: "M000137", name: "吴桐", phone: "152****8165", wechat: true, monthlyStatus: "有效", expiryDays: 18, privateRemaining: 4, frozen: 0, lastClassDays: -5, joinedAt: "2026-02-08" },
+  { id: "M000138", name: "何静", phone: "133****4920", wechat: true, monthlyStatus: "已到期", expiryDays: -48, privateRemaining: 0, frozen: 0, lastClassDays: -52, joinedAt: "2025-12-20" },
+  { id: "M000139", name: "郑妍", phone: "189****7704", wechat: false, monthlyStatus: "暂无月卡", privateRemaining: 2, frozen: 0, lastClassDays: -33, joinedAt: "2026-09-02" },
+  { id: "M000140", name: "孙菲", phone: "181****3157", wechat: true, monthlyStatus: "有效", expiryDays: 55, privateRemaining: 12, frozen: 2, lastClassDays: -1, joinedAt: "2025-11-12" },
+  { id: "M000141", name: "徐璐", phone: "155****6284", wechat: true, monthlyStatus: "即将到期", expiryDays: 3, privateRemaining: 0, frozen: 0, lastClassDays: -3, joinedAt: "2026-05-19" },
   { id: "M000142", name: "高悦", phone: "132****9506", wechat: false, monthlyStatus: "待激活", privateRemaining: 6, frozen: 1, joinedAt: "2026-10-22" },
-  { id: "M000143", name: "唐佳", phone: "176****1049", wechat: true, monthlyStatus: "有效", expiryDays: 45, privateRemaining: 3, frozen: 0, lastClass: "2026-10-27", joinedAt: "2026-01-14" },
-  { id: "M000144", name: "沈宁", phone: "150****7361", wechat: true, monthlyStatus: "暂无月卡", privateRemaining: 8, frozen: 1, lastClass: "2026-10-20", joinedAt: "2026-08-27" },
-  { id: "M000145", name: "钱雅", phone: "139****5627", wechat: false, monthlyStatus: "已到期", expiryDays: -36, privateRemaining: 1, frozen: 0, lastClass: "2026-10-10", joinedAt: "2025-10-30" },
-  { id: "M000146", name: "宋怡", phone: "187****2398", wechat: true, monthlyStatus: "有效", expiryDays: 12, privateRemaining: 7, frozen: 0, lastClass: "2026-10-26", joinedAt: "2026-04-05" },
-  { id: "M000147", name: "冯露", phone: "134****8870", wechat: true, monthlyStatus: "即将到期", expiryDays: 6, privateRemaining: 2, frozen: 1, lastClass: "2026-10-28", joinedAt: "2026-07-23" },
+  { id: "M000143", name: "唐佳", phone: "176****1049", wechat: true, monthlyStatus: "有效", expiryDays: 45, privateRemaining: 3, frozen: 0, lastClassDays: -2, joinedAt: "2026-01-14" },
+  { id: "M000144", name: "沈宁", phone: "150****7361", wechat: true, monthlyStatus: "暂无月卡", privateRemaining: 8, frozen: 1, lastClassDays: -36, joinedAt: "2026-08-27" },
+  { id: "M000145", name: "钱雅", phone: "139****5627", wechat: false, monthlyStatus: "已到期", expiryDays: -36, privateRemaining: 1, frozen: 0, lastClassDays: -41, joinedAt: "2025-10-30" },
+  { id: "M000146", name: "宋怡", phone: "187****2398", wechat: true, monthlyStatus: "有效", expiryDays: 12, privateRemaining: 7, frozen: 0, lastClassDays: -4, joinedAt: "2026-04-05" },
+  { id: "M000147", name: "冯露", phone: "134****8870", wechat: true, monthlyStatus: "即将到期", expiryDays: 6, privateRemaining: 2, frozen: 1, lastClassDays: -1, joinedAt: "2026-07-23" },
   { id: "M000148", name: "陆雪", phone: "158****4602", wechat: false, monthlyStatus: "暂无月卡", privateRemaining: 0, frozen: 0, joinedAt: "2026-10-25" },
-  { id: "M000149", name: "蒋雯", phone: "153****7194", wechat: true, monthlyStatus: "有效", expiryDays: 30, privateRemaining: 5, frozen: 0, lastClass: "2026-10-22", joinedAt: "2026-03-28" },
+  { id: "M000149", name: "蒋雯", phone: "153****7194", wechat: true, monthlyStatus: "有效", expiryDays: 30, privateRemaining: 5, frozen: 0, lastClassDays: -7, joinedAt: "2026-03-28" },
   { id: "M000150", name: "曹琳", phone: "180****3456", wechat: true, monthlyStatus: "待激活", privateRemaining: 0, frozen: 0, joinedAt: "2026-10-27" },
-  { id: "M000151", name: "邓欣", phone: "136****9018", wechat: false, monthlyStatus: "已到期", expiryDays: -43, privateRemaining: 4, frozen: 0, lastClass: "2026-10-02", joinedAt: "2025-09-17" },
-  { id: "M000152", name: "叶青", phone: "178****5243", wechat: true, monthlyStatus: "有效", expiryDays: 62, privateRemaining: 9, frozen: 1, lastClass: "2026-10-29", joinedAt: "2026-02-25" },
+  { id: "M000151", name: "邓欣", phone: "136****9018", wechat: false, monthlyStatus: "已到期", expiryDays: -43, privateRemaining: 4, frozen: 0, lastClassDays: -45, joinedAt: "2025-09-17" },
+  { id: "M000152", name: "叶青", phone: "178****5243", wechat: true, monthlyStatus: "有效", expiryDays: 62, privateRemaining: 9, frozen: 1, lastClassDays: -1, joinedAt: "2026-02-25" },
 ];
 
 const seedToday = localDate();
@@ -219,6 +223,7 @@ export const members: Member[] = memberSeeds.map((seed) => {
   const hasPassIntent = intent !== "暂无月卡";
   const awaitingActivation = intent === "待激活" || intent === "暂无月卡";
   const expiry = typeof seed.expiryDays === "number" ? addDays(seed.expiryDays) : undefined;
+  const lastClass = typeof seed.lastClassDays === "number" ? addDays(seed.lastClassDays) : undefined;
   const monthlyPackageId = hasPassIntent
     ? (["M000140", "M000143", "M000152"].includes(seed.id) ? "p5" : "p4")
     : undefined;
@@ -227,6 +232,7 @@ export const members: Member[] = memberSeeds.map((seed) => {
   const base = {
     ...seed,
     expiry,
+    lastClass,
     notes: seed.id === "M000128" ? "偏好晚间课程" : "",
     activities: seed.id === "M000128" ? [
       { id: "a1", time: "2026-10-28 14:20", description: "预约私教，冻结 1 次", actor: "学员自行操作" },
@@ -267,7 +273,7 @@ export const members: Member[] = memberSeeds.map((seed) => {
       },
     ],
   };
-  const { expiryDays: _omit, ...withoutOffset } = base as typeof base & { expiryDays?: number };
+  const { expiryDays: _omitExpiry, lastClassDays: _omitLastClass, ...withoutOffset } = base as typeof base & { expiryDays?: number; lastClassDays?: number };
   return {
     ...withoutOffset,
     monthlyStatus: computeMonthlyStatus(withoutOffset, seedToday),
