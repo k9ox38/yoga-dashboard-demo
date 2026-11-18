@@ -205,7 +205,7 @@ export function Orders() {
                 <td className="whitespace-nowrap px-4 py-3 text-xs text-[#6B7280]">{o.createdAt.slice(0, 16)}</td>
                 <td className="sticky right-0 w-[110px] bg-white px-3 py-3 transition-colors group-hover:bg-[#f4fbf7]"><div className="flex items-center justify-end gap-2 whitespace-nowrap">
                   {o.status === "待支付" && <button onClick={(event) => { event.stopPropagation(); setModal({ kind: "confirm_pay", order: o }); }} className="h-7 rounded bg-emerald-600 px-2 text-xs text-white hover:bg-emerald-700">确认支付</button>}
-                  {o.status === "退款中" && <button onClick={(event) => { event.stopPropagation(); setModal({ kind: "confirm_refund", order: o }); }} className="h-7 rounded bg-sky-600 px-2 text-xs text-white hover:bg-sky-700">确认退款</button>}
+                  {o.status === "退款中" && <button onClick={(event) => { event.stopPropagation(); setModal({ kind: "confirm_refund", order: o }); }} className="h-7 rounded bg-rose-600 px-2 text-xs text-white hover:bg-rose-700">确认退款</button>}
                   {o.status === "支付失败" && <button onClick={(event) => { event.stopPropagation(); setModal({ kind: "close_order", order: o }); }} className="h-7 px-1 text-xs text-stone-600 hover:text-stone-900">关闭</button>}
                   <ChevronRight className="size-4 shrink-0 text-stone-400" />
                 </div></td>
@@ -221,8 +221,8 @@ export function Orders() {
       {modal.kind === "offline"        && <OfflineOrderModal members={memberOptions} packages={packageOptions} onClose={() => setModal({ kind: "none" })} onSubmit={submitOffline} />}
       {modal.kind === "confirm_pay"    && <ConfirmModal title="确认支付" desc={`确认将订单 ${modal.order.orderNo} 标记为「已支付」？\n实付金额 ¥${modal.order.actualAmount.toLocaleString()}，将同时为用户激活对应卡包。`} confirmLabel="确认已支付" confirmCls="bg-emerald-600 hover:bg-emerald-700 text-white" onClose={() => setModal({ kind: "none" })} onConfirm={() => confirmPay(modal.order)} />}
       {modal.kind === "refund"         && <RefundModal order={modal.order} onClose={() => setModal({ kind: "none" })} onSubmit={(amount, reason) => submitRefund(modal.order, amount, reason)} />}
-      {modal.kind === "confirm_refund" && <ConfirmModal title="确认退款" desc={`确认向 ${modal.order.userName} 退款 ¥${modal.order.actualAmount.toLocaleString()}？\n退款原因：${modal.order.refundReason ?? "—"}\n操作不可撤销，请确认无误。`} confirmLabel="确认退款" confirmCls="bg-sky-600 hover:bg-sky-700 text-white" onClose={() => setModal({ kind: "none" })} onConfirm={() => confirmRefund(modal.order)} />}
-      {modal.kind === "close_order"    && <ConfirmModal title="关闭订单" desc={`确认关闭订单 ${modal.order.orderNo}？\n关闭后订单无法恢复，用户将无法继续支付。`} confirmLabel="确认关闭" confirmCls="bg-stone-800 hover:bg-stone-700 text-white" onClose={() => setModal({ kind: "none" })} onConfirm={() => closeOrder(modal.order)} />}
+      {modal.kind === "confirm_refund" && <ConfirmModal title="确认退款" desc={`确认向 ${modal.order.userName} 退款 ¥${modal.order.actualAmount.toLocaleString()}？\n退款原因：${modal.order.refundReason ?? "—"}\n操作不可撤销，请确认无误。`} confirmLabel="确认退款" confirmCls="bg-rose-600 hover:bg-rose-700 text-white" onClose={() => setModal({ kind: "none" })} onConfirm={() => confirmRefund(modal.order)} />}
+      {modal.kind === "close_order"    && <ConfirmModal title="关闭订单" desc={`确认关闭订单 ${modal.order.orderNo}？\n关闭后订单无法恢复，用户将无法继续支付。`} confirmLabel="确认关闭" confirmCls="bg-rose-600 hover:bg-rose-700 text-white" onClose={() => setModal({ kind: "none" })} onConfirm={() => closeOrder(modal.order)} />}
     </div>
   );
 }
@@ -256,7 +256,7 @@ function OrderDetailDrawer({ order: o, onClose, onAction }: {
         <div className="flex items-center justify-end gap-2 border-t border-stone-200 bg-stone-50 px-6 py-4">
           {o.status === "待支付"   && <button onClick={() => onAction("pay")}            className="h-9 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm">确认支付</button>}
           {o.status === "已支付"   && <button onClick={() => onAction("refund")}         className="h-9 px-4 rounded-lg border border-rose-300 hover:bg-rose-50 text-sm text-rose-600">发起退款</button>}
-          {o.status === "退款中"   && <button onClick={() => onAction("confirm_refund")} className="h-9 px-4 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-sm">确认退款</button>}
+          {o.status === "退款中"   && <button onClick={() => onAction("confirm_refund")} className="h-9 px-4 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-sm">确认退款</button>}
           {o.status === "支付失败" && <button onClick={() => onAction("close")}          className="h-9 px-4 rounded-lg text-stone-600 hover:bg-stone-100 text-sm">关闭订单</button>}
           <button onClick={onClose} className="h-9 px-4 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-sm">关闭</button>
         </div>
@@ -353,7 +353,7 @@ function RefundModal({ order: o, onClose, onSubmit }: { order: Order; onClose: (
           <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} className={inp(err) + " h-auto py-2 resize-none"} placeholder="请填写退款原因，将同步给用户" />
         </MF>
       </div>
-      <ModalFooter onClose={onClose} onSubmit={handle} label="发起退款" cls="bg-sky-600 hover:bg-sky-700 text-white" />
+      <ModalFooter onClose={onClose} onSubmit={handle} label="发起退款" cls="bg-rose-600 hover:bg-rose-700 text-white" />
     </Modal>
   );
 }

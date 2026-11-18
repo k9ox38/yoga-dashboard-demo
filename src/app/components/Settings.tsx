@@ -318,7 +318,7 @@ function AdvancedSection() {
           <div className="text-sm text-stone-900">高级配置</div>
           <div className="text-xs text-stone-500 mt-0.5">面向开发者与系统管理员的原始配置项，修改前请确认影响范围</div>
         </div>
-        <button onClick={startAdd} className="h-8 px-3 rounded-lg bg-stone-800 hover:bg-stone-700 text-white text-xs flex items-center gap-1.5">
+        <button onClick={startAdd} className="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs flex items-center gap-1.5">
           <Plus className="w-3.5 h-3.5" /> 新增配置
         </button>
       </div>

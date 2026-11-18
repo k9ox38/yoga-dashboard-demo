@@ -12,7 +12,7 @@ type CardAction = { card: UserCard; kind: "extend" | "adjust" };
 
 const cardClass = "rounded-xl border border-stone-200 bg-white";
 const inputClass = "h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 disabled:cursor-default disabled:bg-stone-50 disabled:text-stone-600";
-const primaryClass = "inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-emerald-700 px-5 text-sm font-medium text-white transition hover:bg-emerald-800 disabled:opacity-50";
+const primaryClass = "inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-emerald-600 px-5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-50";
 const secondaryClass = "inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-stone-300 bg-white px-5 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:opacity-50";
 const typeLabel: Record<PackageType, string> = { class_pack: "课时包", pass: "月卡 / 季卡" };
 

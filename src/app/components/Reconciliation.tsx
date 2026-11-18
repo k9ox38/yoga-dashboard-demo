@@ -186,7 +186,7 @@ export function Reconciliation() {
           <Zap className="w-3.5 h-3.5" /> 自动匹配
         </button>
         <button onClick={() => setModal({ kind: "import" })}
-          className="h-9 px-3 rounded-lg bg-stone-800 hover:bg-stone-700 text-white text-sm flex items-center gap-1.5">
+          className="h-9 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm flex items-center gap-1.5">
           <Upload className="w-3.5 h-3.5" /> 导入对账单
         </button>
         <button onClick={() => setRecords(SEED)}

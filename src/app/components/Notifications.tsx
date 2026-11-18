@@ -297,7 +297,7 @@ export function Notifications() {
           title="归档通知"
           desc={`确认将「${modal.notif.title}」归档？\n归档后通知将从首页通知条移除，不再对用户展示。`}
           confirmLabel="确认归档"
-          confirmCls="bg-stone-800 hover:bg-stone-700 text-white"
+          confirmCls="bg-emerald-600 hover:bg-emerald-700 text-white"
           onClose={() => setModal({ kind: "none" })}
           onConfirm={() => archive(modal.notif)}
         />

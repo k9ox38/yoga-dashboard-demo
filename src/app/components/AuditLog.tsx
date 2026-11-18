@@ -45,6 +45,7 @@ export function buildSeedLogs(today: Date = new Date()): LogEntry[] {
     { actionType: "发布", objectType: "通知", objectId: "n3", timestamp: at(-7, "14:00:00"), description: `发布通知「${notice.n3}」`, before: { status: "草稿" }, after: { status: "已发布" } },
     { actionType: "导出", objectType: "会员", objectId: "BATCH", timestamp: at(-8, "10:30:22"), description: "导出会员列表，共 25 条记录", ip },
     { actionType: "更新", objectType: "订单", objectId: orderNo(-9, "0012"), timestamp: at(-9, "11:42:00"), description: "登记退款申请「苏晴 · 5 节体验包」", before: { status: "已支付" }, after: { status: "退款中" } },
+    { actionType: "删除", objectType: "排课", objectId: "s5", timestamp: at(-12, "11:26:05"), description: `取消排课「空中吊绳 · ${day(1).slice(5)} 19:00」：教练已停用`, before: { classId: "t5", instructor: "苏菲娅", date: day(1), start: "19:00", room: "空中阁楼" } },
     { actionType: "更新", objectType: "教练", objectId: "i5", timestamp: at(-12, "11:20:33"), description: "更新教练「苏菲娅」状态为禁用", before: { status: "启用" }, after: { status: "禁用" } },
     { actionType: "审核通过", objectType: "订单", objectId: orderNo(-14, "0009"), timestamp: at(-14, "15:10:00"), description: "审核通过退款申请「吴桐 · 5 节体验包」", before: { status: "退款中" }, after: { status: "已退款" } },
     { actionType: "导出", objectType: "订单", objectId: "BATCH", timestamp: at(-17, "11:30:00"), description: `导出订单列表（${lastMonth} 月月度对账）`, ip },
@@ -255,20 +256,19 @@ function DetailModal({ log: l, onClose }: { log: LogEntry; onClose: () => void }
       <div className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white rounded-2xl shadow-2xl flex flex-col max-h-[88vh] w-full max-w-2xl">
 
-        {/* Dark header */}
-        <div className="bg-stone-900 rounded-t-2xl px-6 py-5 flex items-start justify-between shrink-0">
+        <div className="border-b border-stone-100 rounded-t-2xl px-6 py-5 flex items-start justify-between shrink-0">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-stone-300 text-xs">{l.id}</span>
+              <span className="font-mono text-stone-400 text-xs">{l.id}</span>
               <Badge cls={actionBadge[l.actionType]}>{l.actionType}</Badge>
             </div>
-            <div className="text-white">{l.description}</div>
+            <div className="text-stone-900">{l.description}</div>
             <div className="flex items-center gap-4 text-xs text-stone-400">
               <span className="font-mono">{l.timestamp}</span>
               {l.ip && <span>IP: {l.ip}</span>}
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-stone-700 flex items-center justify-center text-stone-400 shrink-0">
+          <button onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-stone-100 flex items-center justify-center text-stone-400 shrink-0" aria-label="关闭">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -318,7 +318,7 @@ function DetailModal({ log: l, onClose }: { log: LogEntry; onClose: () => void }
 
         <div className="px-6 py-4 border-t border-stone-100 bg-stone-50 rounded-b-2xl flex items-center justify-between shrink-0">
           <span className="text-xs text-stone-400">审计日志只读，不可修改</span>
-          <button onClick={onClose} className="h-9 px-5 rounded-lg bg-stone-800 hover:bg-stone-700 text-white text-sm">关闭</button>
+          <button onClick={onClose} className="h-9 px-5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-sm">关闭</button>
         </div>
       </div>
     </div>
@@ -328,19 +328,18 @@ function DetailModal({ log: l, onClose }: { log: LogEntry; onClose: () => void }
 /* ─── JSON block ─────────────────────────────────── */
 
 function JsonBlock({ data, theme }: { data: Record<string, unknown>; theme: "before" | "after" }) {
-  const bg   = theme === "before" ? "bg-rose-950"    : "bg-stone-950";
-  const dot  = theme === "before" ? "text-rose-300"  : "text-emerald-300";
-  const str  = theme === "before" ? "text-rose-200"  : "text-emerald-200";
+  const box   = theme === "before" ? "border-rose-100 bg-rose-50"       : "border-emerald-100 bg-emerald-50";
+  const value = theme === "before" ? "text-rose-700"                    : "text-emerald-800";
 
   const entries = Object.entries(data);
 
   return (
-    <div className={`${bg} rounded-lg p-4 space-y-1.5`}>
+    <div className={`${box} rounded-lg border p-4 space-y-1.5`}>
       {entries.map(([key, val]) => (
         <div key={key} className="flex items-start gap-2 text-xs font-mono">
           <span className="text-stone-500 shrink-0">{key}</span>
-          <span className="text-stone-600 shrink-0">:</span>
-          <span className={typeof val === "number" ? "text-amber-300" : typeof val === "boolean" ? "text-violet-300" : `${dot} ${str}`}>
+          <span className="text-stone-400 shrink-0">:</span>
+          <span className={`break-all ${value}`}>
             {typeof val === "string" ? `"${val}"` : String(val)}
           </span>
         </div>

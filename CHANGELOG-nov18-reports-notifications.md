@@ -63,3 +63,5 @@
   - 查看套餐 fields look read-only, and the "修改仅影响后续购卡" note only shows when editing.
   - The notice modal shows 最近更新 instead of the raw id `n1`.
   - Reservation 预约时间 values are relative instead of April.
+- One primary green: the dark teal `booking-primary` on 会员, 预约管理 and the card drawer, the darker green on 套餐 and 数据报表, and the black buttons on 对账, 设置 and the notice archive confirm all use `emerald-600` (hover `emerald-700`), like the sidebar. The `--booking-primary` token is set to the same green. Irreversible money and close actions (确认退款, 发起退款, 关闭订单) are rose instead of blue or black. The audit detail modal uses a light header and light before/after panels.
+- 苏菲娅 is disabled, so her upcoming 空中吊绳 class (s5) and its booking were removed from the seed. The audit log records the cancellation right after the coach was disabled.

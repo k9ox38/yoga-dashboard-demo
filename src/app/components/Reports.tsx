@@ -259,7 +259,7 @@ export function Reports() {
           </div>
           <div className="flex gap-2">
             <button onClick={() => setSubscribed((value) => !value)} aria-pressed={subscribed} className={buttonClass}>{subscribed ? <Check className="size-4 text-emerald-700" /> : <Mail className="size-4" />}{subscribed ? "已订阅月报" : "订阅月报"}</button>
-            <button onClick={exportReport} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-700 px-4 text-sm font-medium text-white hover:bg-emerald-800"><Download className="size-4" />导出报表</button>
+            <button onClick={exportReport} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700"><Download className="size-4" />导出报表</button>
           </div>
         </header>
         <div className={`${cardClass} flex flex-wrap items-center gap-3 p-3`}>

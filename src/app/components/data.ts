@@ -147,7 +147,7 @@ export const classSessions: ClassSession[] = [
   { id: "s2", classId: "t2", instructor: "陈丽",   room: "B 馆", date: addDays(0), start: "09:30", end: "10:45", booked: 12, difficulty: 1, isVisible: true  },
   { id: "s3", classId: "t3", instructor: "谭美",   room: "C 馆", date: addDays(0), start: "18:30", end: "19:45", booked: 18, difficulty: 2, isVisible: true  },
   { id: "s4", classId: "t4", instructor: "拉吉",   room: "A 馆", date: addDays(1), start: "06:30", end: "08:00", booked: 9,  difficulty: 5, isVisible: true  },
-  { id: "s5", classId: "t5", instructor: "苏菲娅", room: "空中阁楼", date: addDays(1), start: "19:00", end: "20:15", booked: 10, difficulty: 2, isVisible: false },
+  // s5 (空中吊绳 · 苏菲娅) was cancelled when the coach was disabled; see the audit log.
   { id: "s6", classId: "t6", instructor: "谭美",   room: "B 馆", date: addDays(2), start: "10:00", end: "11:00", booked: 6,  difficulty: 1, isVisible: true  },
   { id: "s7", classId: "t7", instructor: "吴安雅", room: "A 馆", date: addDays(2), start: "18:00", end: "19:15", booked: 20, difficulty: 4, isVisible: true  },
   { id: "s8", classId: "t3", instructor: "陈丽",   room: "C 馆", date: addDays(3), start: "20:00", end: "21:00", booked: 14, difficulty: 2, isVisible: true  },
@@ -159,7 +159,6 @@ export const reservations: Reservation[] = [
   { id: "r1", member: "林晓", memberId: "M000128", sessionId: "s1", className: "晨间流动", date: addDays(0), time: "07:00", status: "已确认", benefit: "月卡权益", bookedAt: `${addDays(-1)} 21:14` },
   { id: "r2", member: "陈悦", memberId: "M000129", sessionId: "s1", className: "晨间流动", date: addDays(0), time: "07:00", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 08:02` },
   { id: "r3", member: "周宁", memberId: "M000130", sessionId: "s3", className: "深度放松", date: addDays(0), time: "18:30", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 12:40` },
-  { id: "r4", member: "许晨", memberId: "M000131", sessionId: "s5", className: "空中吊绳", date: addDays(1), time: "19:00", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 15:20` },
   { id: "r5", member: "苏晴", memberId: "M000132", sessionId: "s4", className: "进阶强化", date: addDays(1), time: "06:30", status: "已取消", benefit: "无", bookedAt: `${addDays(-2)} 11:10` },
   { id: "r6", member: "赵清", memberId: "M000133", sessionId: "s2", className: "舒缓基础", date: addDays(0), time: "09:30", status: "已取消", benefit: "无", bookedAt: `${addDays(-2)} 09:00` },
   { id: "r7", member: "王蕾", memberId: "M000134", sessionId: "s7", className: "力量塑形", date: addDays(2), time: "18:00", status: "已确认", benefit: "月卡权益", bookedAt: `${addDays(-1)} 19:33` },
@@ -312,7 +311,6 @@ export const instructorSessionBreakdown = [
   { name: "陈丽", value: 2 },
   { name: "谭美", value: 2 },
   { name: "拉吉", value: 1 },
-  { name: "苏菲娅", value: 1 },
 ];
 
 /** @deprecated Prefer buildMonthlyRevenue() from lib/demoCommerce for current-month-relative charts. */

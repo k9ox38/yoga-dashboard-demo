@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
 export type MemberPackagePreset = "pass" | "private";
-const selectClass = "h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-booking-primary focus:ring-2 focus:ring-booking-primary/15";
+const selectClass = "h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15";
 
 export function MemberCardDrawer({ member, preset, onClose, onSuccess }: {
   member: Member;
@@ -46,7 +46,7 @@ export function MemberCardDrawer({ member, preset, onClose, onSuccess }: {
           <div className="space-y-2"><div className="text-sm font-medium">选择套餐</div><select aria-label="选择套餐" value={packageId} onChange={(event) => setPackageId(event.target.value)} className={selectClass}>{availablePackages.map((item) => <option key={item.id} value={item.id}>{item.name} · ¥{item.price.toLocaleString()}</option>)}</select>{!availablePackages.length && <div className="text-sm text-amber-700">暂无上架中的套餐，请先在套餐管理中上架产品。</div>}</div>
           <div className="space-y-2"><div className="text-sm font-medium">支付方式</div><select aria-label="支付方式" value={payment} onChange={(event) => setPayment(event.target.value)} className={selectClass}>{["微信", "支付宝", "线下现金"].map((item) => <option key={item}>{item}</option>)}</select></div>
           <div className="space-y-2"><div className="text-sm font-medium">备注</div><Textarea placeholder="选填，记录收款或卡项说明" className="min-h-24 bg-white" /></div>
-          <Button type="submit" disabled={!selectedPackage} className="h-11 w-full rounded-lg bg-booking-primary text-white hover:bg-teal-900">确认办理</Button>
+          <Button type="submit" disabled={!selectedPackage} className="h-11 w-full rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">确认办理</Button>
         </form>
       </div>
     </div>

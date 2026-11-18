@@ -2,7 +2,7 @@
 
 :root {
   --booking-canvas: #f2f5f7;
-  --booking-primary: #195e55;
+  --booking-primary: oklch(59.6% 0.145 163.225); /* = emerald-600, the app's one primary green */
   --booking-soft: #e6f2ec;
   --font-size: 16px;
   --background: #ffffff;
