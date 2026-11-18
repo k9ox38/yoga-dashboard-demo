@@ -32,6 +32,7 @@
 - `data.ts`: member `lastClass` uses relative `lastClassDays`, like `expiryDays`, so the at-risk list doesn't grow as the calendar moves.
 - `Settings.tsx` and `Reconciliation.tsx`: removed the remaining `toISOString()` date stamps.
 - Tests: `src/app/lib/__tests__/reportMetrics.test.ts` covers period ranges, risk-list agreement with the member seed, and notice windows/timestamps.
+- `theme.css`: native `<select>`s get `appearance: none` and a flat chevron. Safari was painting its grey bevelled control inside the bordered box (Packages, Members, Reservations, the card drawer, the modals, Settings and Profile). Selects that already use `appearance-none` with their own chevron icon (Orders, Notifications, Audit Log, Reconciliation) are excluded. Selects also no longer inherit the bold weight of their surrounding `<label>`.
 
 ## Still sample / not wired
 

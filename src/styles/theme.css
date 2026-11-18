@@ -184,4 +184,34 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+
+  /* Selects sit inside <label>s in several filter bars; don't inherit the label's medium weight. */
+  select {
+    font-weight: var(--font-weight-normal);
+  }
+}
+
+/*
+ * Native <select>: Tailwind's preflight does not reset `appearance`, so Safari paints its
+ * bevelled grey control inside our bordered box. Draw one flat control with our own chevron
+ * in every browser (the opened list stays the OS menu). Unlayered on purpose: the chevron's
+ * end padding has to win over the `px-*` utilities the selects carry. Selects marked
+ * `appearance-none` already draw their own chevron icon and are left alone.
+ */
+select:not([multiple]):not([size]):not(.appearance-none) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+  padding-inline-end: 2.25rem;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  print-color-adjust: exact;
+}
+
+select:not([multiple]):not([size]):not(.appearance-none):disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
