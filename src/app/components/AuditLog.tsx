@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { RefreshCw, X, ChevronDown, Eye, Shield, Activity, Users, Layers } from "lucide-react";
 import { DateRangePicker } from "./DatePicker";
+import { buildSeedNotices } from "./Notifications";
+import { addDaysFromToday, shiftLocalDateTime } from "../lib/dates";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -23,30 +25,40 @@ interface LogEntry {
 
 /* ─── Seed data ──────────────────────────────────── */
 
-const INIT: LogEntry[] = [
-  { id:"LOG-0001", actionType:"创建",  operator:"林梅", operatorRole:"馆长", objectType:"课程",   objectId:"t8",            timestamp:"2026-06-22 09:12:33", description:"创建课程「一对一私教」",              after:{ id:"t8", name:"一对一私教", format:"私教", capacity:1 } },
-  { id:"LOG-0002", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"套餐",   objectId:"PKG-2605",      timestamp:"2026-06-21 16:30:10", description:"更新套餐「季卡」价格",                before:{ price:2000 }, after:{ price:1800 } },
-  { id:"LOG-0003", actionType:"发布",  operator:"林梅", operatorRole:"馆长", objectType:"通知",   objectId:"n2",            timestamp:"2026-06-20 14:22:45", description:"发布通知「暑期特惠套餐上线」",          before:{ status:"草稿" }, after:{ status:"已发布" } },
-  { id:"LOG-0004", actionType:"登录",  operator:"林梅", operatorRole:"馆长", objectType:"系统配置", objectId:"SYS",         timestamp:"2026-06-20 09:00:05", description:"管理员登录系统",                       ip:"192.168.1.10" },
-  { id:"LOG-0005", actionType:"删除",  operator:"林梅", operatorRole:"馆长", objectType:"排课",   objectId:"s9",            timestamp:"2026-06-19 18:45:22", description:"删除排课「力量塑形 - 周五」",           before:{ classId:"t7", instructor:"吴安雅", date:"2026-06-21", start:"18:00" } },
-  { id:"LOG-0006", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"教练",   objectId:"i5",            timestamp:"2026-06-18 11:20:33", description:"更新教练「苏菲娅」状态为禁用",          before:{ status:"启用" }, after:{ status:"禁用" } },
-  { id:"LOG-0007", actionType:"创建",  operator:"林梅", operatorRole:"馆长", objectType:"排课",   objectId:"s10",           timestamp:"2026-06-18 10:05:18", description:"创建排课「空中吊绳 - 周四 19:00」",     after:{ classId:"t5", instructor:"苏菲娅", date:"2026-06-19", start:"19:00", room:"空中阁楼" } },
-  { id:"LOG-0008", actionType:"归档",  operator:"林梅", operatorRole:"馆长", objectType:"通知",   objectId:"n6",            timestamp:"2026-06-17 15:30:00", description:"归档通知「端午节放假通知」",            before:{ status:"已发布" }, after:{ status:"已归档" } },
-  { id:"LOG-0009", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"系统配置", objectId:"CFG-interval",timestamp:"2026-06-16 14:00:00", description:"更新首页通知条轮播间隔",               before:{ key:"carousel_interval_ms", value:"3000" }, after:{ key:"carousel_interval_ms", value:"4000" } },
-  { id:"LOG-0010", actionType:"导出",  operator:"林梅", operatorRole:"馆长", objectType:"会员",   objectId:"BATCH",         timestamp:"2026-06-15 10:30:22", description:"导出会员列表，共 10 条记录",            ip:"192.168.1.10" },
-  { id:"LOG-0011", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"预约",   objectId:"r3",            timestamp:"2026-06-14 16:00:10", description:"手动更新预约「刘芳」状态为已签到",      before:{ status:"已确认" }, after:{ status:"已签到" } },
-  { id:"LOG-0012", actionType:"创建",  operator:"林梅", operatorRole:"馆长", objectType:"订单",   objectId:"ORD-OFF-0601",  timestamp:"2026-06-13 11:00:00", description:"线下录入订单「月卡 - 韩雪」",           after:{ orderNo:"ORD-OFF-0601", userName:"韩雪", packageName:"月卡", actualAmount:680, payChannel:"现金" } },
-  { id:"LOG-0013", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"套餐",   objectId:"PKG-2506",      timestamp:"2026-06-12 09:30:00", description:"下架套餐「旧版次卡」",                  before:{ status:"上架中" }, after:{ status:"已下架" } },
-  { id:"LOG-0014", actionType:"删除",  operator:"林梅", operatorRole:"馆长", objectType:"教练",   objectId:"i_temp",        timestamp:"2026-06-11 14:45:00", description:"删除教练档案「临时教练」",              before:{ name:"临时教练", phone:"130****0000", status:"禁用" } },
-  { id:"LOG-0015", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"会员",   objectId:"m6",            timestamp:"2026-06-10 10:00:00", description:"更新会员「韩雪」状态为已过期",          before:{ status:"活跃" }, after:{ status:"已过期" } },
-  { id:"LOG-0016", actionType:"创建",  operator:"林梅", operatorRole:"馆长", objectType:"教练",   objectId:"i5",            timestamp:"2026-06-08 09:00:00", description:"新增教练「苏菲娅」",                    after:{ name:"苏菲娅", phone:"152****3318", bio:"舞者出身，空中吊绳课程专家", status:"启用" } },
-  { id:"LOG-0017", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"课程",   objectId:"t3",            timestamp:"2026-06-07 15:00:00", description:"更新课程「深度放松」容量 15→18",        before:{ capacity:15 }, after:{ capacity:18 } },
-  { id:"LOG-0018", actionType:"导出",  operator:"林梅", operatorRole:"馆长", objectType:"订单",   objectId:"BATCH",         timestamp:"2026-06-06 11:30:00", description:"导出订单列表（5月月度财务报表）",       ip:"192.168.1.10" },
-  { id:"LOG-0019", actionType:"登录",  operator:"林梅", operatorRole:"馆长", objectType:"系统配置", objectId:"SYS",         timestamp:"2026-06-05 08:55:00", description:"管理员登录系统",                       ip:"192.168.1.10" },
-  { id:"LOG-0020", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"系统配置", objectId:"CFG-booking", timestamp:"2026-06-04 14:00:00", description:"更新预约取消窗口：2 小时 → 4 小时",    before:{ key:"cancel_window_hours", value:"2" }, after:{ key:"cancel_window_hours", value:"4" } },
-  { id:"LOG-0021", actionType:"审核通过",operator:"林梅",operatorRole:"馆长", objectType:"订单",  objectId:"ORD-20260615-0012",timestamp:"2026-06-15 12:10:00",description:"审核通过退款申请「刘芳 · 5节体验包」", before:{ status:"退款中" }, after:{ status:"已退款" } },
-  { id:"LOG-0022", actionType:"更新",  operator:"林梅", operatorRole:"馆长", objectType:"预约",   objectId:"r5",            timestamp:"2026-06-11 09:30:00", description:"取消预约「陈博 · 进阶强化 06:30」",    before:{ status:"已确认" }, after:{ status:"已取消" } },
-];
+/** Demo history relative to `today`, pointing at the members, orders, notices and sessions the other pages show. */
+export function buildSeedLogs(today: Date = new Date()): LogEntry[] {
+  const at = (days: number, time: string) => shiftLocalDateTime(days, time, today);
+  const day = (days: number) => addDaysFromToday(days, today);
+  const orderNo = (days: number, seq: string) => `ORD-${day(days).replace(/-/g, "")}-${seq}`;
+  const notice = Object.fromEntries(buildSeedNotices(today).map((item) => [item.id, item.title]));
+  const lastMonth = ((today.getMonth() + 11) % 12) + 1;
+  const ip = "192.168.1.10";
+  const rows: Array<Omit<LogEntry, "id" | "operator" | "operatorRole">> = [
+    { actionType: "更新", objectType: "通知", objectId: "n4", timestamp: at(-1, "16:30:00"), description: `编辑草稿「${notice.n4}」`, before: { 维护时段: "待定" }, after: { 维护时段: "02:00–04:00" } },
+    { actionType: "更新", objectType: "预约", objectId: "r5", timestamp: at(-1, "09:30:00"), description: "取消预约「苏晴 · 进阶强化」", before: { status: "已确认" }, after: { status: "已取消" } },
+    { actionType: "登录", objectType: "系统配置", objectId: "SYS", timestamp: at(-1, "08:55:00"), description: "管理员登录系统", ip },
+    { actionType: "发布", objectType: "通知", objectId: "n1", timestamp: at(-2, "10:00:00"), description: `发布通知「${notice.n1}」`, before: { status: "草稿" }, after: { status: "已发布" } },
+    { actionType: "创建", objectType: "排课", objectId: "s6", timestamp: at(-3, "10:05:18"), description: `创建排课「产前产后 · ${day(2).slice(5)} 10:00」`, after: { classId: "t6", instructor: "谭美", date: day(2), start: "10:00", room: "B 馆" } },
+    { actionType: "更新", objectType: "会员", objectId: "M000128", timestamp: at(-4, "16:00:00"), description: "更新会员「林晓」备注", before: { notes: "" }, after: { notes: "偏好晚间课程" } },
+    { actionType: "发布", objectType: "通知", objectId: "n2", timestamp: at(-6, "09:00:00"), description: `发布通知「${notice.n2}」`, before: { status: "草稿" }, after: { status: "已发布" } },
+    { actionType: "登录", objectType: "系统配置", objectId: "SYS", timestamp: at(-6, "08:50:00"), description: "管理员登录系统", ip },
+    { actionType: "发布", objectType: "通知", objectId: "n3", timestamp: at(-7, "14:00:00"), description: `发布通知「${notice.n3}」`, before: { status: "草稿" }, after: { status: "已发布" } },
+    { actionType: "导出", objectType: "会员", objectId: "BATCH", timestamp: at(-8, "10:30:22"), description: "导出会员列表，共 25 条记录", ip },
+    { actionType: "更新", objectType: "订单", objectId: orderNo(-9, "0012"), timestamp: at(-9, "11:42:00"), description: "登记退款申请「苏晴 · 5 节体验包」", before: { status: "已支付" }, after: { status: "退款中" } },
+    { actionType: "更新", objectType: "教练", objectId: "i5", timestamp: at(-12, "11:20:33"), description: "更新教练「苏菲娅」状态为禁用", before: { status: "启用" }, after: { status: "禁用" } },
+    { actionType: "审核通过", objectType: "订单", objectId: orderNo(-14, "0009"), timestamp: at(-14, "15:10:00"), description: "审核通过退款申请「吴桐 · 5 节体验包」", before: { status: "退款中" }, after: { status: "已退款" } },
+    { actionType: "导出", objectType: "订单", objectId: "BATCH", timestamp: at(-17, "11:30:00"), description: `导出订单列表（${lastMonth} 月月度对账）`, ip },
+    { actionType: "更新", objectType: "套餐", objectId: "PKG-0007", timestamp: at(-20, "09:30:00"), description: "下架套餐「旧版 12 次卡」", before: { status: "上架中" }, after: { status: "已下架" } },
+    { actionType: "创建", objectType: "订单", objectId: orderNo(-23, "0011"), timestamp: at(-23, "10:22:00"), description: "线下录入订单「月卡 · 蒋雯」", after: { userName: "蒋雯", packageName: "月卡", actualAmount: 680, payChannel: "现金" } },
+    { actionType: "归档", objectType: "通知", objectId: "n6", timestamp: at(-25, "09:00:00"), description: `归档通知「${notice.n6}」`, before: { status: "已发布" }, after: { status: "已归档" } },
+    { actionType: "删除", objectType: "排课", objectId: "s0", timestamp: at(-26, "18:45:22"), description: `删除排课「力量塑形 · ${day(-24).slice(5)} 18:00」`, before: { classId: "t7", instructor: "吴安雅", date: day(-24), start: "18:00" } },
+    { actionType: "更新", objectType: "系统配置", objectId: "CFG-interval", timestamp: at(-30, "14:00:00"), description: "更新首页通知条轮播间隔：3 秒 → 4 秒", before: { key: "carousel_interval_ms", value: "3000" }, after: { key: "carousel_interval_ms", value: "4000" } },
+    { actionType: "更新", objectType: "系统配置", objectId: "CFG-booking", timestamp: at(-33, "14:00:00"), description: "更新预约取消窗口：2 小时 → 4 小时", before: { key: "cancel_window_hours", value: "2" }, after: { key: "cancel_window_hours", value: "4" } },
+    { actionType: "更新", objectType: "课程", objectId: "t3", timestamp: at(-40, "15:00:00"), description: "更新课程「深度放松」容量 15→18", before: { capacity: 15 }, after: { capacity: 18 } },
+    { actionType: "更新", objectType: "套餐", objectId: "PKG-0005", timestamp: at(-45, "10:12:33"), description: "更新套餐「季卡」价格", before: { price: 2000 }, after: { price: 1800 } },
+  ];
+  return rows.map((row, index) => ({ id: `LOG-${String(index + 1).padStart(4, "0")}`, operator: "林梅", operatorRole: "馆长", ...row }));
+}
 
 /* ─── Style maps ─────────────────────────────────── */
 
@@ -83,7 +95,7 @@ const objBadge: Record<ObjectType, string> = {
 /* ─── Main component ─────────────────────────────── */
 
 export function AuditLog() {
-  const [logs]        = useState<LogEntry[]>(INIT);
+  const [logs]        = useState<LogEntry[]>(() => buildSeedLogs());
   const [detail, setDetail] = useState<LogEntry | null>(null);
   const [fAction, setFAction] = useState<"" | ActionType>("");
   const [fObject, setFObject] = useState<"" | ObjectType>("");
@@ -137,11 +149,11 @@ export function AuditLog() {
       </div>
 
       {/* Stats + Top breakdown side-by-side */}
-      <div className="grid grid-cols-[1fr_320px] gap-4 items-start">
+      <div className="grid grid-cols-[1fr_320px] gap-4">
 
-        {/* Left: 4 stat cards */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-4 gap-4">
+        {/* Left: 4 stat cards, 2 × 2 so they fill the height of the distribution card */}
+        <div>
+          <div className="grid h-full grid-cols-2 grid-rows-2 gap-4">
             <StatCard icon={<Activity className="w-4 h-4 text-white" />} accent="bg-stone-700" label="日志总数" value={String(stats.total)} />
             <StatCard icon={<Users className="w-4 h-4 text-white" />} accent="bg-indigo-600" label="操作人数" value={String(stats.operators)} />
             <StatCard icon={<Shield className="w-4 h-4 text-white" />} accent="bg-sky-600" label="操作类型" value={String(stats.actionTypes)} />
@@ -176,7 +188,7 @@ export function AuditLog() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-        <div className="grid grid-cols-[80px_80px_100px_80px_130px_148px_1fr_60px] px-4 py-2.5 bg-stone-900 text-xs text-stone-400">
+        <div className="grid grid-cols-[80px_80px_100px_80px_130px_148px_1fr_60px] px-4 py-2.5 bg-stone-50 border-b border-stone-100 text-xs text-stone-500">
           <div>ID</div>
           <div>操作类型</div>
           <div>操作人</div>
@@ -341,11 +353,11 @@ function JsonBlock({ data, theme }: { data: Record<string, unknown>; theme: "bef
 
 function StatCard({ icon, accent, label, value }: { icon: React.ReactNode; accent: string; label: string; value: string }) {
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4 flex items-center gap-3">
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${accent}`}>{icon}</div>
+    <div className="bg-white rounded-xl border border-stone-200 p-5 flex items-center gap-4">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${accent}`}>{icon}</div>
       <div>
         <div className="text-xs text-stone-500">{label}</div>
-        <div className="text-xl text-stone-900 leading-tight">{value}</div>
+        <div className="mt-0.5 text-2xl text-stone-900 leading-tight tabular-nums">{value}</div>
       </div>
     </div>
   );

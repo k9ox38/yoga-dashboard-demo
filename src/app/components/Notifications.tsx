@@ -339,7 +339,7 @@ function NotifModal({ initial, onClose, onSubmit }: {
   };
 
   return (
-    <Modal title={initial ? (isArchived ? "查看通知" : "编辑通知") : "新增通知"} subtitle={initial?.id} onClose={onClose} wide>
+    <Modal title={initial ? (isArchived ? "查看通知" : "编辑通知") : "新增通知"} subtitle={initial ? `最近更新 ${initial.updatedAt}` : undefined} onClose={onClose} wide>
       <div className="p-6 space-y-4">
         {isArchived && (
           <div className="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-xs text-stone-500">

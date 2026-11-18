@@ -22,7 +22,7 @@
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
   --border: rgba(0, 0, 0, 0.1);
-  --input: transparent;
+  --input: #e2e8f0; /* visible field border; fields that set bg-white otherwise had no edge */
   --input-background: #f3f3f5;
   --switch-background: #cbced4;
   --font-weight-medium: 500;
@@ -185,8 +185,9 @@
     line-height: 1.5;
   }
 
-  /* Selects sit inside <label>s in several filter bars; don't inherit the label's medium weight. */
-  select {
+  /* Fields often sit inside <label>s; don't inherit the label's medium weight. */
+  select,
+  textarea {
     font-weight: var(--font-weight-normal);
   }
 }
@@ -209,6 +210,18 @@ select:not([multiple]):not([size]):not(.appearance-none) {
   text-overflow: ellipsis;
   cursor: pointer;
   print-color-adjust: exact;
+}
+
+/* Safari draws a cramped stepper glyph inside number fields; the forms provide their own −/+ where needed. */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 select:not([multiple]):not([size]):not(.appearance-none):disabled {

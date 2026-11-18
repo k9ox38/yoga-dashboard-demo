@@ -11,6 +11,7 @@ import {
 import { useStore } from "../store-context";
 import { localDate, recentMonthKeys } from "../lib/dates";
 import { demoReconRecords } from "../lib/demoCommerce";
+import { downloadCsv } from "../lib/csv";
 import {
   AT_RISK_DAYS, PERIOD_PRESETS, atRiskMembers, dataUpdatedStamp, expiringPassMembers,
   lowPrivateBalanceMembers, lowestUpcomingFill, membersWithValidCards, pendingRecon, periodRange,
@@ -153,19 +154,12 @@ function salesRows(packages: PackageProduct[]) {
   }).sort((a, b) => b.amount - a.amount);
 }
 
-function downloadCsv(filename: string, rows: Array<Array<string | number>>) {
-  const escape = (cell: string | number) => {
-    const text = String(cell);
-    return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-  };
-  const blob = new Blob([`﻿${rows.map((row) => row.map(escape).join(",")).join("\n")}`], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
+/** Legend labels in ink, not series colour; the swatch carries identity. */
+const legendProps = {
+  iconSize: 10,
+  wrapperStyle: { fontSize: 12 },
+  formatter: (value: string) => <span style={{ color: "#57534e" }}>{value}</span>,
+};
 
 export function Reports() {
   const { members, packages, sessions, templates, addMemberActivity } = useStore();
@@ -309,16 +303,16 @@ function OverviewTab({ data, onMembers, onNavigate }: { data: ReportData; onMemb
   const cancelRate = ((totals.cancelled / (totals.attended + totals.absent + totals.cancelled)) * 100).toFixed(1);
   const last = data.income[data.income.length - 1];
   return <div className="space-y-5">
-    <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(168px,1fr))]">{data.overviewKpis.map((kpi) => <KpiCard key={kpi.label} {...kpi} />)}</div>
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">{data.overviewKpis.map((kpi) => <KpiCard key={kpi.label} {...kpi} />)}</div>
     <div className="grid gap-5 xl:grid-cols-[2fr_1fr]">
       <Card title="收入趋势" subtitle="近 12 个月 · 单位：元（示例）">
-        <div className="h-[280px]"><ResponsiveContainer width="100%" height="100%"><LineChart data={data.income} margin={{ top: 12, right: 42, left: 8, bottom: 0 }}><CartesianGrid stroke={GRID} vertical={false} /><XAxis dataKey="month" tick={axisTick} axisLine={false} tickLine={false} /><YAxis domain={[0, 20000]} ticks={[0, 5000, 10000, 15000, 20000]} tickFormatter={(value) => value === 0 ? "0" : `${value / 10000}万`} tick={axisTick} axisLine={false} tickLine={false} width={42} /><Tooltip {...tooltipProps} formatter={(value, name) => [yuan(Number(value)), name]} /><Legend verticalAlign="top" align="left" height={32} iconType="line" /><Line type="monotone" dataKey="cash" name="现金收入" stroke={EMERALD} strokeWidth={2} dot={false} activeDot={{ r: 4 }} label={(props: EndLabelProps) => <EndLabel {...props} count={data.income.length} />} /><Line type="monotone" dataKey="recognised" name="消课确认收入" stroke={SKY} strokeWidth={2} dot={false} activeDot={{ r: 4 }} label={(props: EndLabelProps) => <EndLabel {...props} count={data.income.length} />} /></LineChart></ResponsiveContainer></div>
+        <div className="h-[280px]"><ResponsiveContainer width="100%" height="100%"><LineChart data={data.income} margin={{ top: 12, right: 42, left: 8, bottom: 0 }}><CartesianGrid stroke={GRID} vertical={false} /><XAxis dataKey="month" tick={axisTick} axisLine={false} tickLine={false} /><YAxis domain={[0, 20000]} ticks={[0, 5000, 10000, 15000, 20000]} tickFormatter={(value) => value === 0 ? "0" : `${value / 10000}万`} tick={axisTick} axisLine={false} tickLine={false} width={42} /><Tooltip {...tooltipProps} formatter={(value, name) => [yuan(Number(value)), name]} /><Legend verticalAlign="top" align="left" height={32} iconType="line" {...legendProps} /><Line type="monotone" dataKey="cash" name="现金收入" stroke={EMERALD} strokeWidth={2} dot={false} activeDot={{ r: 4 }} label={(props: EndLabelProps) => <EndLabel {...props} count={data.income.length} />} /><Line type="monotone" dataKey="recognised" name="消课确认收入" stroke={SKY} strokeWidth={2} dot={false} activeDot={{ r: 4 }} label={(props: EndLabelProps) => <EndLabel {...props} count={data.income.length} />} /></LineChart></ResponsiveContainer></div>
         <Insight>现金收入高于消课确认收入，差额沉淀为预收余额 —— {last.month}净增预收 {yuan(last.cash - last.recognised)}。</Insight>
       </Card>
       <RevenueComposition data={data} />
     </div>
     <div className="grid gap-5 xl:grid-cols-2">
-      <Card title="预约与出勤" subtitle="最近 8 周（示例）" action={<div className="flex shrink-0 gap-4 text-xs text-stone-600"><span>出勤率 <b className="tabular-nums text-stone-900">{attendanceRate}%</b></span><span>取消率 <b className="tabular-nums text-stone-900">{cancelRate}%</b></span></div>}><div className="h-[270px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={data.weeks}><CartesianGrid stroke={GRID} vertical={false} /><XAxis dataKey="week" tick={axisTick} axisLine={false} tickLine={false} /><YAxis tick={axisTick} axisLine={false} tickLine={false} width={32} /><Tooltip {...tooltipProps} /><Legend verticalAlign="top" align="left" height={32} /><Bar dataKey="attended" stackId="a" name="出勤" fill={EMERALD} stroke="#fff" strokeWidth={1} /><Bar dataKey="absent" stackId="a" name="缺席" fill={SKY} stroke="#fff" strokeWidth={1} /><Bar dataKey="cancelled" stackId="a" name="取消" fill={NEUTRAL} stroke="#fff" strokeWidth={1} radius={[4, 4, 0, 0]} /></BarChart></ResponsiveContainer></div></Card>
+      <Card title="预约与出勤" subtitle="最近 8 周（示例）" action={<div className="flex shrink-0 gap-4 text-xs text-stone-600"><span>出勤率 <b className="tabular-nums text-stone-900">{attendanceRate}%</b></span><span>取消率 <b className="tabular-nums text-stone-900">{cancelRate}%</b></span></div>}><div className="h-[270px]"><ResponsiveContainer width="100%" height="100%"><BarChart data={data.weeks}><CartesianGrid stroke={GRID} vertical={false} /><XAxis dataKey="week" tick={axisTick} axisLine={false} tickLine={false} /><YAxis tick={axisTick} axisLine={false} tickLine={false} width={32} /><Tooltip {...tooltipProps} /><Legend verticalAlign="top" align="left" height={32} {...legendProps} /><Bar dataKey="attended" stackId="a" name="出勤" fill={EMERALD} stroke="#fff" strokeWidth={1} /><Bar dataKey="absent" stackId="a" name="缺席" fill={SKY} stroke="#fff" strokeWidth={1} /><Bar dataKey="cancelled" stackId="a" name="取消" fill={NEUTRAL} stroke="#fff" strokeWidth={1} radius={[4, 4, 0, 0]} /></BarChart></ResponsiveContainer></div></Card>
       <Heatmap />
     </div>
     <div className="grid gap-5 xl:grid-cols-[2fr_1fr]"><CourseTable rows={data.courses} onAll={() => onNavigate("/classes")} /><Alerts data={data} onMembers={onMembers} onNavigate={onNavigate} /></div>
@@ -329,7 +323,7 @@ function OverviewTab({ data, onMembers, onNavigate }: { data: ReportData; onMemb
 function MembersTab({ data, reminded, onRemind, onNavigate }: { data: ReportData; reminded: Record<string, boolean>; onRemind: (member: RiskMember) => void; onNavigate: (path: string) => void }) {
   const [riskFilter, setRiskFilter] = useState<"全部" | RiskStatus>("全部");
   return <div className="space-y-5">
-    <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(168px,1fr))]">{data.memberKpis.map((kpi) => <KpiCard key={kpi.label} {...kpi} />)}</div>
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">{data.memberKpis.map((kpi) => <KpiCard key={kpi.label} {...kpi} />)}</div>
     <div className="grid gap-5 xl:grid-cols-2"><ConversionFunnel /><VisitDistribution activeCount={data.active.length} /></div>
     <div className="grid gap-5 xl:grid-cols-[2fr_1fr]"><CohortMatrix /><RenewalAnalysis /></div>
     <RiskList members={data.risk} filter={riskFilter} onFilter={setRiskFilter} reminded={reminded} onRemind={onRemind} onAll={() => onNavigate("/members")} />

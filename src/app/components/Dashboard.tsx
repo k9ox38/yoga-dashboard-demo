@@ -5,9 +5,10 @@ import { useStore } from "../store-context";
 import { localDate } from "../lib/dates";
 import { computeMonthlyStatus } from "../lib/cardStatus";
 import { buildMonthlyRevenue, currentMonthPaidRevenue, demoOrders } from "../lib/demoCommerce";
+import { AT_RISK_DAYS, atRiskMembers, recentlyActiveMembers } from "../lib/reportMetrics";
 
 
-function StatCard({ label, value, delta, up, icon: Icon, accent, period = "较上周" }: { label: string; value: string; delta: string; up: boolean; icon: React.ComponentType<{ className?: string }>; accent: string; period?: string }) {
+function StatCard({ label, value, delta, up = true, icon: Icon, accent, period = "较上周" }: { label: string; value: string; delta?: string; up?: boolean; icon: React.ComponentType<{ className?: string }>; accent: string; period?: string }) {
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-5">
       <div className="flex items-center justify-between">
@@ -17,16 +18,20 @@ function StatCard({ label, value, delta, up, icon: Icon, accent, period = "较�
         </div>
       </div>
       <div className="mt-3 text-stone-900 text-2xl">{value}</div>
-      <div className={`mt-1 flex items-center gap-1 text-xs ${up ? "text-emerald-600" : "text-rose-600"}`}>
-        {up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-        {delta} {period}
-      </div>
+      {delta ? (
+        <div className={`mt-1 flex items-center gap-1 text-xs ${up ? "text-emerald-600" : "text-rose-600"}`}>
+          {up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+          {delta} {period}
+        </div>
+      ) : (
+        <div className="mt-1 text-xs text-stone-500">{period}</div>
+      )}
     </div>
   );
 }
 
 export function Dashboard() {
-  const { sessions, templates, members, reservations } = useStore();
+  const { sessions, templates, members, reservations, packages } = useStore();
   const tplById = (id: string) => templates.find((t) => t.id === id);
   const todayKey = localDate();
   const todays = sessions
@@ -38,6 +43,8 @@ export function Dashboard() {
     const status = statusOf(member);
     return status === "有效" || status === "即将到期" || status === "待激活" || member.privateRemaining > 0;
   });
+  const recentlyActive = recentlyActiveMembers(members, todayKey);
+  const atRisk = atRiskMembers(members, packages, todayKey);
   const monthlyRevenue = buildMonthlyRevenue(demoOrders);
   const monthRevenue = currentMonthPaidRevenue(demoOrders);
   const expiringMembers = members.flatMap((member) => {
@@ -52,7 +59,7 @@ export function Dashboard() {
   return (
     <div className="p-8 space-y-6">
       <div className="grid grid-cols-4 gap-4">
-        <StatCard label="今日预约" value={String(todayReservations.length)} delta="+12.4%" up icon={CalendarCheck} accent="bg-emerald-500" />
+        <StatCard label="今日预约" value={String(todayReservations.length)} icon={CalendarCheck} accent="bg-emerald-500" period={`今日 ${todays.length} 节课`} />
         <div className="bg-white rounded-xl border border-stone-200 p-5">
           <div className="flex items-center justify-between">
             <span className="text-sm text-stone-500">活跃会员</span>
@@ -67,8 +74,8 @@ export function Dashboard() {
             <span>私教 <span className="text-stone-600">{members.filter((member) => member.privateRemaining > 0).length}</span></span>
           </div>
         </div>
-        <StatCard label="本月消课金额" value="¥0" delta="—" up icon={DollarSign} accent="bg-lime-500" period="暂无消课金额数据" />
-        <StatCard label="本月营收" value={`¥${monthRevenue.toLocaleString()}`} delta="—" up={false} icon={DollarSign} accent="bg-amber-500" period="已支付订单 · 本月" />
+        <StatCard label={`近 ${AT_RISK_DAYS} 天到访会员`} value={String(recentlyActive.length)} icon={TrendingUp} accent="bg-lime-500" period={`共 ${members.length} 位 · ${atRisk.length} 人超 ${AT_RISK_DAYS} 天未到访`} />
+        <StatCard label="本月营收" value={`¥${monthRevenue.toLocaleString()}`} icon={DollarSign} accent="bg-amber-500" period="已支付订单 · 本月至今" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">

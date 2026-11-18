@@ -11,7 +11,7 @@ type UserCard = MemberCard & { memberId: string; memberName: string; memberPhone
 type CardAction = { card: UserCard; kind: "extend" | "adjust" };
 
 const cardClass = "rounded-xl border border-stone-200 bg-white";
-const inputClass = "h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10";
+const inputClass = "h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 disabled:cursor-default disabled:bg-stone-50 disabled:text-stone-600";
 const primaryClass = "inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-emerald-700 px-5 text-sm font-medium text-white transition hover:bg-emerald-800 disabled:opacity-50";
 const secondaryClass = "inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-stone-300 bg-white px-5 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:opacity-50";
 const typeLabel: Record<PackageType, string> = { class_pack: "课时包", pass: "月卡 / 季卡" };
@@ -59,13 +59,13 @@ export function Packages() {
         <div className="flex gap-7 border-b border-stone-200">
           {(["products", "cards"] as const).map((item) => <button key={item} onClick={() => setTab(item)} className={`-mb-px border-b-2 px-1 py-3 text-sm font-medium ${tab === item ? "border-emerald-700 text-emerald-700" : "border-transparent text-stone-500 hover:text-stone-800"}`}>{item === "products" ? "套餐产品" : "用户卡包"}</button>)}
         </div>
-        {tab === "products" ? <ProductsTab onCreate={() => navigate("/packages/new")} /> : <CardsTab cards={cards} members={members} />}
+        {tab === "products" ? <ProductsTab /> : <CardsTab cards={cards} members={members} />}
       </div>
     </div>
   );
 }
 
-function ProductsTab({ onCreate }: { onCreate: () => void }) {
+function ProductsTab() {
   const navigate = useNavigate();
   const { packages, togglePackageStatus } = useStore();
   const [draftKeyword, setDraftKeyword] = useState("");
@@ -91,7 +91,7 @@ function ProductsTab({ onCreate }: { onCreate: () => void }) {
       <div className="ml-auto flex shrink-0 gap-2"><button onClick={() => setFilters({ keyword: draftKeyword.trim(), type: draftType, status: draftStatus })} className={primaryClass}>查询</button><button onClick={reset} className={secondaryClass}>重置</button></div>
     </div>
     <section className={`${cardClass} overflow-hidden`}>
-      <div className="flex items-center justify-between border-b border-stone-200 px-5 py-4"><h2 className="font-semibold text-stone-900">套餐列表</h2><button onClick={onCreate} className="text-sm font-medium text-emerald-700 hover:text-emerald-800">新增套餐</button></div>
+      <div className="flex items-center justify-between border-b border-stone-200 px-5 py-4"><h2 className="font-semibold text-stone-900">套餐列表</h2></div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[900px] text-left text-sm">
           <thead className="bg-stone-50 text-stone-600"><tr>{["套餐名称", "类型", "套餐权益", "售价", "状态", "操作"].map((item) => <th key={item} className="px-5 py-3 font-medium">{item}</th>)}</tr></thead>
@@ -220,7 +220,7 @@ export function PackageEditor({ readOnly = false }: { readOnly?: boolean }) {
   return <div className="min-h-full bg-[#f4f7f4] pb-24 text-sm text-stone-800">
     <div className="mx-auto max-w-[1280px] space-y-5 p-6 lg:p-8">
       <div className="flex items-start justify-between gap-4"><div><div className="mb-3 flex items-center gap-2 text-sm text-stone-500"><button onClick={() => navigate("/packages")} className="hover:text-emerald-700">套餐管理</button><span>/</span><span>{readOnly ? "查看套餐" : isNew ? "新增套餐" : "编辑套餐"}</span></div><h1 className="text-2xl font-semibold text-stone-950">{readOnly ? "查看套餐" : isNew ? "新增套餐" : "编辑套餐"}</h1><p className="mt-1 text-sm text-stone-500">{initial ? `${initial.name} · ${initial.code}` : "创建新的线下售卡套餐"}</p></div>{readOnly && initial && <button onClick={() => navigate(`/packages/${initial.id}/edit`)} className={primaryClass}>编辑</button>}</div>
-      <InfoBar>修改仅影响后续购卡，不改变已售会员卡</InfoBar>
+      {!isNew && !readOnly && <InfoBar>修改仅影响后续购卡，不改变已售会员卡</InfoBar>}
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
         <div className="space-y-5">
           <FormCard title="基本信息">

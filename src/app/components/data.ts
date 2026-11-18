@@ -156,16 +156,16 @@ export const classSessions: ClassSession[] = [
 ];
 
 export const reservations: Reservation[] = [
-  { id: "r1", member: "林晓", memberId: "M000128", sessionId: "s1", className: "晨间流动", date: addDays(0), time: "07:00", status: "已确认", benefit: "月卡权益", bookedAt: "2026-04-28 21:14" },
-  { id: "r2", member: "陈悦", memberId: "M000129", sessionId: "s1", className: "晨间流动", date: addDays(0), time: "07:00", status: "已取消", benefit: "无", bookedAt: "2026-04-29 08:02" },
-  { id: "r3", member: "周宁", memberId: "M000130", sessionId: "s3", className: "深度放松", date: addDays(0), time: "18:30", status: "已取消", benefit: "无", bookedAt: "2026-04-29 12:40" },
-  { id: "r4", member: "许晨", memberId: "M000131", sessionId: "s5", className: "空中吊绳", date: addDays(1), time: "19:00", status: "已取消", benefit: "无", bookedAt: "2026-04-29 15:20" },
-  { id: "r5", member: "苏晴", memberId: "M000132", sessionId: "s4", className: "进阶强化", date: addDays(1), time: "06:30", status: "已取消", benefit: "无", bookedAt: "2026-04-27 11:10" },
-  { id: "r6", member: "赵清", memberId: "M000133", sessionId: "s2", className: "舒缓基础", date: addDays(0), time: "09:30", status: "已取消", benefit: "无", bookedAt: "2026-04-28 09:00" },
-  { id: "r7", member: "王蕾", memberId: "M000134", sessionId: "s7", className: "力量塑形", date: addDays(2), time: "18:00", status: "已确认", benefit: "月卡权益", bookedAt: "2026-04-29 19:33" },
-  { id: "r8", member: "李然", memberId: "M000135", sessionId: "s6", className: "产前产后", date: addDays(2), time: "10:00", status: "已取消", benefit: "无", bookedAt: "2026-04-29 20:51" },
-  { id: "r9", member: "张敏", memberId: "M000136", sessionId: "s8", className: "深度放松", date: addDays(3), time: "20:00", status: "已取消", benefit: "无", bookedAt: "2026-04-30 07:08" },
-  { id: "r10", member: "吴桐", memberId: "M000137", sessionId: "s2", className: "舒缓基础", date: addDays(0), time: "09:30", status: "未到", benefit: "月卡权益", bookedAt: "2026-04-28 17:25" },
+  { id: "r1", member: "林晓", memberId: "M000128", sessionId: "s1", className: "晨间流动", date: addDays(0), time: "07:00", status: "已确认", benefit: "月卡权益", bookedAt: `${addDays(-1)} 21:14` },
+  { id: "r2", member: "陈悦", memberId: "M000129", sessionId: "s1", className: "晨间流动", date: addDays(0), time: "07:00", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 08:02` },
+  { id: "r3", member: "周宁", memberId: "M000130", sessionId: "s3", className: "深度放松", date: addDays(0), time: "18:30", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 12:40` },
+  { id: "r4", member: "许晨", memberId: "M000131", sessionId: "s5", className: "空中吊绳", date: addDays(1), time: "19:00", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 15:20` },
+  { id: "r5", member: "苏晴", memberId: "M000132", sessionId: "s4", className: "进阶强化", date: addDays(1), time: "06:30", status: "已取消", benefit: "无", bookedAt: `${addDays(-2)} 11:10` },
+  { id: "r6", member: "赵清", memberId: "M000133", sessionId: "s2", className: "舒缓基础", date: addDays(0), time: "09:30", status: "已取消", benefit: "无", bookedAt: `${addDays(-2)} 09:00` },
+  { id: "r7", member: "王蕾", memberId: "M000134", sessionId: "s7", className: "力量塑形", date: addDays(2), time: "18:00", status: "已确认", benefit: "月卡权益", bookedAt: `${addDays(-1)} 19:33` },
+  { id: "r8", member: "李然", memberId: "M000135", sessionId: "s6", className: "产前产后", date: addDays(2), time: "10:00", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 20:51` },
+  { id: "r9", member: "张敏", memberId: "M000136", sessionId: "s8", className: "深度放松", date: addDays(3), time: "20:00", status: "已取消", benefit: "无", bookedAt: `${addDays(-1)} 07:08` },
+  { id: "r10", member: "吴桐", memberId: "M000137", sessionId: "s2", className: "舒缓基础", date: addDays(0), time: "09:30", status: "未到", benefit: "月卡权益", bookedAt: `${addDays(-2)} 17:25` },
 ];
 
 export const packageProducts: PackageProduct[] = [

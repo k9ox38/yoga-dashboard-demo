@@ -42,3 +42,24 @@
 
 - The 课程与排课, 营收与财务 and 教练绩效 tabs are placeholders.
 - The 对比 / 课程类型 / 教练 filter chips are display-only.
+
+## Review pass: polish and consistency
+
+- 排课: 导出课程表 was wired to the create handler, so it opened the new-session form. It now downloads the week as CSV, which also removes the long-standing `Schedule.tsx:397` type error. The page opens on today instead of Monday. The week view starts at 06:00, because the 06:30 进阶强化 class was being drawn at 07:00. The export and view toggle buttons are restyled to match the rest of the app.
+- Global fields:
+  - Text in multi-line text boxes is no longer bold.
+  - Safari's number-field stepper glyph is hidden.
+  - The shared `Input` gets a visible border; the new-member and edit-member drawers and the card drawer 备注 had borderless white fields.
+  - `index.html` declares `color-scheme: light`, since the app has no dark theme; Safari was drawing dark native popups and menus.
+- 数据报表: KPI rows of six lay out 3 × 2 or 6 × 1 instead of 5 + 1. Chart legends use ink-coloured labels.
+- `/analytics`: an unlinked placeholder page with an "占位" chart. It now redirects to 数据报表 and the old files are removed.
+- 对账管理: the table is regridded. Amount and currency no longer run together, the time no longer touches the status, the 详情 / 匹配 buttons no longer wrap, and the header is light like Orders.
+- 审计日志:
+  - The log entries are relative to today and refer to real demo members, orders, notices and sessions; they were from June and named people and notices that no longer exist.
+  - The stat cards fill a 2 × 2 grid and the table header is light.
+- 概览: the hard-coded "+12.4%" and the ¥0 "暂无消课金额数据" card are replaced with live numbers (今日课节数, 近 30 天到访会员). 本月营收 no longer shows a red down-arrow next to "—".
+- Smaller fixes:
+  - Duplicate 创建课程 and 新增套餐 buttons are removed.
+  - 查看套餐 fields look read-only, and the "修改仅影响后续购卡" note only shows when editing.
+  - The notice modal shows 最近更新 instead of the raw id `n1`.
+  - Reservation 预约时间 values are relative instead of April.

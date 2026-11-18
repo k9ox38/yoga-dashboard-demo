@@ -211,36 +211,32 @@ export function Reconciliation() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-        <div className="grid grid-cols-[4px_80px_1fr_88px_44px_142px_90px_1fr_100px] px-4 py-2.5 bg-stone-900 text-xs text-stone-400">
-          <div /><div>渠道</div><div>渠道流水号</div><div className="text-right">金额</div>
-          <div>币种</div><div>交易时间</div><div>匹配状态</div><div>匹配订单</div><div />
+      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden"><div className="overflow-x-auto"><div className="min-w-[860px]">
+        <div className="grid grid-cols-[76px_minmax(0,1fr)_104px_150px_84px_minmax(0,1fr)_128px] gap-x-3 px-4 py-2.5 bg-stone-50 border-b border-stone-100 text-xs text-stone-500">
+          <div>渠道</div><div>渠道流水号</div><div className="text-right">金额（CNY）</div>
+          <div>交易时间</div><div>匹配状态</div><div>匹配订单</div><div className="text-right">操作</div>
         </div>
 
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-sm text-stone-400">暂无匹配记录</div>
         ) : filtered.map((r) => (
           <div key={r.id}
-            className={`grid grid-cols-[4px_80px_1fr_88px_44px_142px_90px_1fr_100px] items-center px-4 py-3 border-b border-stone-100 last:border-0 hover:brightness-95 transition-all ${statusRowLeft[r.matchStatus]} ${statusRowBg[r.matchStatus]}`}>
-            {/* left border spacer - handled by border-l */}
-            <div />
+            className={`grid grid-cols-[76px_minmax(0,1fr)_104px_150px_84px_minmax(0,1fr)_128px] gap-x-3 items-center px-4 py-3 border-b border-stone-100 last:border-0 hover:brightness-95 transition-all ${statusRowLeft[r.matchStatus]} ${statusRowBg[r.matchStatus]}`}>
             {/* Channel */}
             <span><span className={`text-xs px-2 py-0.5 rounded ${channelBadge[r.channel]}`}>{r.channel}</span></span>
             {/* Trade no */}
             <span className="font-mono text-xs text-stone-600 truncate pr-2">{r.channelTradeNo}</span>
             {/* Amount */}
             <div className="text-right">
-              <span className="text-sm text-stone-900">¥{r.amount.toLocaleString()}</span>
+              <span className="text-sm tabular-nums text-stone-900">¥{r.amount.toLocaleString()}</span>
               {r.matchStatus === "金额不符" && r.matchedAmount && (
                 <div className="text-xs text-rose-500">≠ ¥{r.matchedAmount.toLocaleString()}</div>
               )}
             </div>
-            {/* Currency */}
-            <span className="text-xs text-stone-400">{r.currency}</span>
             {/* Trade time */}
-            <span className="text-xs text-stone-500 font-mono">{r.tradeTime}</span>
+            <span className="text-xs text-stone-500 font-mono tabular-nums whitespace-nowrap">{r.tradeTime}</span>
             {/* Status */}
-            <span><span className={`text-xs px-2 py-0.5 rounded-full ${statusBadge[r.matchStatus]}`}>{r.matchStatus}</span></span>
+            <span><span className={`whitespace-nowrap text-xs px-2 py-0.5 rounded-full ${statusBadge[r.matchStatus]}`}>{r.matchStatus}</span></span>
             {/* Matched order */}
             <span className="text-xs font-mono text-stone-500 truncate pr-2">
               {r.matchedOrderNo ?? <span className="text-stone-300">—</span>}
@@ -248,18 +244,19 @@ export function Reconciliation() {
             {/* Actions */}
             <div className="flex items-center gap-1.5 justify-end">
               <button onClick={() => setModal({ kind: "detail", record: r })}
-                className="h-7 px-2 rounded border border-stone-200 hover:bg-stone-100 text-xs text-stone-600 flex items-center gap-1">
+                className="h-7 px-2 rounded border border-stone-200 bg-white hover:bg-stone-100 text-xs text-stone-600 flex shrink-0 items-center gap-1 whitespace-nowrap">
                 <Eye className="w-3 h-3" /> 详情
               </button>
               {r.matchStatus !== "已匹配" && (
                 <button onClick={() => setModal({ kind: "manual_match", record: r })}
-                  className="h-7 px-2 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs flex items-center gap-1">
+                  className="h-7 px-2 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs flex shrink-0 items-center gap-1 whitespace-nowrap">
                   <Link2 className="w-3 h-3" /> 匹配
                 </button>
               )}
             </div>
           </div>
         ))}
+        </div></div>
 
         <div className="px-4 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
           <span>共 {filtered.length} 条记录</span>

@@ -20,7 +20,6 @@ const meta: Record<string, { title: string; subtitle: string; primary: "class" |
   "/reports":        { title: "数据报表", subtitle: "预约、营收与教练多维报表", primary: "none"        },
   "/reconciliation": { title: "对账管理", subtitle: "渠道流水核对与匹配",       primary: "none"        },
   "/audit-log":      { title: "审计日志", subtitle: "操作记录与数据变更追溯",   primary: "none"        },
-  "/analytics":      { title: "数据分析", subtitle: "经营数据洞察",             primary: "none"        },
   "/settings":       { title: "设置",     subtitle: "馆所基础配置",             primary: "none"        },
   "/profile":        { title: "管理员资料",subtitle: "个人信息与账号安全",      primary: "none"        },
 };

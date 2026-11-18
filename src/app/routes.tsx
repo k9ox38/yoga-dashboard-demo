@@ -14,7 +14,6 @@ import { NotificationsPage }  from "./pages/NotificationsPage";
 import { AuditLogPage }       from "./pages/AuditLogPage";
 import { ReportsPage }          from "./pages/ReportsPage";
 import { ReconciliationPage }   from "./pages/ReconciliationPage";
-import { AnalyticsPage }        from "./pages/AnalyticsPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -41,7 +40,7 @@ export const router = createHashRouter([
       { path: "audit-log",      Component: AuditLogPage },
       { path: "reports",          Component: ReportsPage },
       { path: "reconciliation",   Component: ReconciliationPage },
-      { path: "analytics",        Component: AnalyticsPage },
+      { path: "analytics",        element: <Navigate to="/reports" replace /> },
       { path: "settings",     Component: SettingsPage },
       { path: "profile",      Component: ProfilePage },
       { path: "*",            Component: NotFoundPage },

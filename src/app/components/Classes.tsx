@@ -1,5 +1,5 @@
 import type { ClassTemplate } from "./data";
-import { Plus, Edit3, CalendarPlus, Users } from "lucide-react";
+import { Edit3, CalendarPlus, Users } from "lucide-react";
 
 const formatGradient: Record<string, string> = {
   团课: "from-emerald-400 to-teal-600",
@@ -14,7 +14,7 @@ type Props = {
   onSchedule: (t: ClassTemplate) => void;
 };
 
-export function Classes({ templates, sessionCounts, onCreate, onEdit, onSchedule }: Props) {
+export function Classes({ templates, sessionCounts, onEdit, onSchedule }: Props) {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-4">
@@ -22,9 +22,6 @@ export function Classes({ templates, sessionCounts, onCreate, onEdit, onSchedule
           <div className="text-stone-900">课程目录</div>
           <div className="text-xs text-stone-500">先创建课程，再到课程表上排课</div>
         </div>
-        <button onClick={onCreate} className="h-9 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm flex items-center gap-1.5">
-          <Plus className="w-4 h-4" /> 创建课程
-        </button>
       </div>
       <div className="grid grid-cols-3 gap-4">
         {templates.map((c) => (

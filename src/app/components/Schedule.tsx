@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Download, Star, EyeOff, Users, LayoutGrid, List } from "lucide-react";
 import type { ClassSession, ClassTemplate } from "./data";
+import { downloadCsv } from "../lib/csv";
 
 /* ── constants ──────────────────────────────────── */
 
 const WEEKDAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
-const START_HOUR = 7;
+const START_HOUR = 6; // earliest seeded class starts 06:30
 const END_HOUR   = 21;
 const HOUR_PX    = 64; // pixels per hour
 const TOTAL_H    = (END_HOUR - START_HOUR) * HOUR_PX;
@@ -181,7 +182,7 @@ function TimelineWeekView({ days, sessions, templates, onEdit, onCreate, goToDay
               <div
                 key={i}
                 className="absolute right-0 left-0 pr-2 flex justify-end"
-                style={{ top: i * HOUR_PX - 8 }}
+                style={{ top: Math.max(0, i * HOUR_PX - 8) }}
               >
                 <span className="text-[10px] text-stone-400 tabular-nums leading-none">
                   {(START_HOUR + i).toString().padStart(2, "0")}:00
@@ -313,7 +314,8 @@ type Props = {
 export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
   const [view, setView]             = useState<"week" | "day">("day");
   const [weekOffset, setWeekOffset] = useState(0);
-  const [selectedDay, setSelectedDay] = useState(0);
+  const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0
+  const [selectedDay, setSelectedDay] = useState(todayIndex);
 
   const monday = getMonday(weekOffset);
 
@@ -335,6 +337,18 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
   const startLabel = `${monday.getMonth() + 1}/${monday.getDate()}`;
   const endDate    = new Date(monday); endDate.setDate(monday.getDate() + 6);
   const endLabel   = `${endDate.getMonth() + 1}/${endDate.getDate()}`;
+
+  function exportWeek() {
+    const weekKeys = days.map(fmt);
+    const rows = sessions
+      .filter(s => weekKeys.includes(s.date))
+      .sort((a, b) => a.date.localeCompare(b.date) || a.start.localeCompare(b.start))
+      .map(s => {
+        const tpl = tplById(s.classId);
+        return [s.date, WEEKDAYS[weekKeys.indexOf(s.date)], s.start, s.end, tpl?.name ?? s.classId, tpl?.format ?? "", s.instructor, s.room, s.booked, tpl?.capacity ?? "", s.isVisible ? "可见" : "已隐藏"];
+      });
+    downloadCsv(`课程表-${weekKeys[0]}-${weekKeys[6]}.csv`, [["日期", "星期", "开始", "结束", "课程", "形式", "教练", "场地", "已约", "容量", "小程序可见"], ...rows]);
+  }
 
   function goToDay(i: number) {
     setSelectedDay(i);
@@ -363,7 +377,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
             <ChevronRight className="w-4 h-4 text-stone-600" />
           </button>
           <button
-            onClick={() => { setWeekOffset(0); setSelectedDay(0); }}
+            onClick={() => { setWeekOffset(0); setSelectedDay(todayIndex); }}
             className="h-8 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-xs text-stone-600 transition-colors"
           >
             今天
@@ -377,7 +391,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
               onClick={() => setView("week")}
               title="周视图"
               className={`h-7 px-2.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${
-                view === "week" ? "bg-stone-900 text-white" : "text-stone-500 hover:text-stone-700 hover:bg-stone-50"
+                view === "week" ? "bg-emerald-50 text-emerald-700" : "text-stone-500 hover:text-stone-700 hover:bg-stone-50"
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" /> 周
@@ -386,7 +400,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
               onClick={() => setView("day")}
               title="日视图"
               className={`h-7 px-2.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${
-                view === "day" ? "bg-stone-900 text-white" : "text-stone-500 hover:text-stone-700 hover:bg-stone-50"
+                view === "day" ? "bg-emerald-50 text-emerald-700" : "text-stone-500 hover:text-stone-700 hover:bg-stone-50"
               }`}
             >
               <List className="w-3.5 h-3.5" /> 日
@@ -394,8 +408,8 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
           </div>
 
           <button
-            onClick={onCreate}
-            className="h-9 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm flex items-center gap-1.5 transition-colors"
+            onClick={exportWeek}
+            className="h-9 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-sm flex items-center gap-1.5 transition-colors"
           >
             <Download className="w-4 h-4" /> 导出课程表
           </button>
