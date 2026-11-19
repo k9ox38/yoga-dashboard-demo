@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Download, Star, EyeOff, Users, LayoutGrid, List } from "lucide-react";
 import type { ClassSession, ClassTemplate } from "./data";
-import { downloadCsv } from "../lib/csv";
+import { ScheduleExportDialog } from "./ScheduleExportDialog";
+import { buildScheduleWeek, paletteIndex } from "../lib/scheduleImage";
+import { addDays } from "../lib/dates";
 
 /* ── constants ──────────────────────────────────── */
 
@@ -51,8 +53,7 @@ function isToday(d: Date) {
 }
 
 function sessionPalette(classId: string) {
-  const hash = classId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  return COLOR_PALETTES[hash % COLOR_PALETTES.length];
+  return COLOR_PALETTES[paletteIndex(classId, COLOR_PALETTES.length)];
 }
 
 function timeToMinutes(t: string) {
@@ -350,17 +351,13 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
   const endDate    = new Date(monday); endDate.setDate(monday.getDate() + 6);
   const endLabel   = `${endDate.getMonth() + 1}/${endDate.getDate()}`;
 
-  function exportWeek() {
-    const weekKeys = days.map(fmt);
-    const rows = sessions
-      .filter(s => weekKeys.includes(s.date))
-      .sort((a, b) => a.date.localeCompare(b.date) || a.start.localeCompare(b.start))
-      .map(s => {
-        const tpl = tplById(s.classId);
-        return [s.date, WEEKDAYS[weekKeys.indexOf(s.date)], s.start, s.end, tpl?.name ?? s.classId, tpl?.format ?? "", s.instructor, s.room, s.booked, tpl?.capacity ?? "", s.isVisible ? "可见" : "已隐藏"];
-      });
-    downloadCsv(`课程表-${weekKeys[0]}-${weekKeys[6]}.csv`, [["日期", "星期", "开始", "结束", "课程", "形式", "教练", "场地", "已约", "容量", "小程序可见"], ...rows]);
-  }
+  // The export is a picture of the week shown, built only when the dialog is open.
+  const [exportOpen, setExportOpen] = useState(false);
+  const mondayKey = fmt(monday);
+  const exportWeek = useMemo(
+    () => buildScheduleWeek(Array.from({ length: 7 }, (_, i) => addDays(mondayKey, i)), sessions, templates),
+    [mondayKey, sessions, templates],
+  );
 
   function goToDay(i: number) {
     setSelectedDay(i);
@@ -369,6 +366,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
 
   return (
     <div className="space-y-4 p-4 sm:p-6 lg:p-8">
+      <ScheduleExportDialog open={exportOpen} onOpenChange={setExportOpen} week={exportWeek} />
 
       {/* ── Top controls ── */}
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -420,7 +418,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
           </div>
 
           <button
-            onClick={exportWeek}
+            onClick={() => setExportOpen(true)}
             aria-label="导出课程表"
             className="h-9 px-2.5 sm:px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-sm flex items-center gap-1.5 whitespace-nowrap transition-colors"
           >

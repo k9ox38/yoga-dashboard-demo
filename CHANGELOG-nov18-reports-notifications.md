@@ -129,3 +129,10 @@ Fixed along the way:
 - 排课's 开始时间 and 结束时间 open an in-app picker (`TimeField`) instead of Safari's bare time box: hour and minute columns (5-minute steps) with the current time centred and highlighted green. Arrow keys move through each column.
 - The end-time picker greys out times that aren't after the start, and offers 45 / 60 / 75 / 90 分钟 shortcuts counted from the start.
 - Changing the start time moves the end time with it, so the class keeps its length. The length shows under the fields (课程时长 1 小时 15 分钟).
+
+## Timetable image
+
+- 排课 → 导出课程表 now makes a picture of the week shown instead of a CSV. It opens a preview, and 下载图片 saves `课程表-<from>-<to>.png` (2960 px wide, sharp enough to print or post). On a phone you can also long-press the preview to save it.
+- The image has one column per day (周一–周日) and one card per class: time, course, coach · room, 团课/私教 · level, and seats taken (已约 18/20, or 已满). Each course keeps the same colour as in the week view. Days with no classes say 暂无课程.
+- Classes hidden from members (对用户可见 off) are left out, so the picture matches what members see. The preview says how many were left out.
+- Drawn directly on a canvas (`lib/renderScheduleImage.ts`), so no new dependency and no screenshot of the page. If the Noto Sans SC web font can't load, the system Chinese font is used after at most about a second.
