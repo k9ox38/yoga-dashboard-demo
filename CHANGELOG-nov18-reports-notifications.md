@@ -100,3 +100,20 @@ Fixed along the way:
 - 设置 edit/delete and photo buttons only appeared on hover, so touch screens could not reach them. They are now always shown on touch screens.
 - 概览's two 查看全部 links did nothing. They now open 排课 and 会员.
 - 管理员资料's 最近登录 list showed April dates. It is now relative to today.
+
+## Login and logout
+
+- **管理员登录 page (`#/login`):** username or email plus password, with these extras:
+  - Show/hide password.
+  - A Caps Lock warning.
+  - “7 天内自动登录”.
+  - A 忘记密码 note.
+  - A 登录中… loading state.
+  - The demo account (admin / demo1234), with a 填入账号 button.
+
+  On desktop a brand panel sits on the left; on phones the page is a single column, and the fields use 16px text so iOS doesn't zoom in on focus.
+- **Sign-in required:** every app page now requires sign-in. A signed-out visit to a link such as `#/orders` goes to the login page and returns to that page after signing in.
+- **Signing out:** use the new icon beside the profile at the bottom of the sidebar, or 管理员资料 › 退出登录 (that button did nothing before). Both ask for confirmation, then open a 你已安全退出 page (`#/logout`) showing when the session started and how long it lasted, with a 重新登录 button. Opening `#/logout` directly also signs out.
+- **How the demo sign-in works:** it is checked in the browser only (`lib/auth.ts`, tested in `lib/__tests__/auth.test.ts`). The session is kept in sessionStorage, or in localStorage for 7 days with 自动登录. If storage is blocked, it is kept in memory for the tab.
+- **Demo data survives sign-out:** the data now lives above the router, so edits made in the demo are kept when you sign out and back in within the same tab.
+- **管理员资料 › 最近登录:** the first row is now the current session's real sign-in time.

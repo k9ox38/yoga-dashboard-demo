@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { NavLink } from "react-router";
-import { LayoutDashboard, Calendar, Users, BookOpen, UserCog, Settings, Flower2, CreditCard, ReceiptText, Bell, ScrollText, PieChart, ArrowLeftRight, X } from "lucide-react";
+import { LogoutDialog } from "./LogoutDialog";
+import { LayoutDashboard, Calendar, Users, BookOpen, UserCog, Settings, Flower2, CreditCard, ReceiptText, Bell, ScrollText, PieChart, ArrowLeftRight, X, LogOut } from "lucide-react";
 
 const NAV_GROUPS: { label?: string; items: { to: string; label: string; icon: React.ComponentType<{ className?: string }> }[] }[] = [
   {
@@ -51,6 +53,7 @@ const NAV_GROUPS: { label?: string; items: { to: string; label: string; icon: Re
  * page closes it.
  */
 export function Sidebar({ open = false, onClose }: { open?: boolean; onClose?: () => void }) {
+  const [logoutOpen, setLogoutOpen] = useState(false);
   return (
     <>
     <div aria-hidden className={`fixed inset-0 z-40 bg-stone-900/40 transition-opacity duration-200 lg:hidden ${open ? "opacity-100" : "pointer-events-none opacity-0"}`} onClick={onClose} />
@@ -105,13 +108,14 @@ export function Sidebar({ open = false, onClose }: { open?: boolean; onClose?: (
         ))}
       </nav>
 
-      {/* Profile */}
+      {/* Profile + sign out */}
+      <div className="flex shrink-0 items-center border-t border-stone-200">
       <NavLink
         to="/profile"
         aria-label="查看管理员资料"
         onClick={onClose}
         className={({ isActive }) =>
-          `px-4 py-3.5 border-t border-stone-200 flex items-center gap-2.5 transition-colors shrink-0 ${
+          `min-w-0 flex-1 pl-4 pr-2 py-3.5 flex items-center gap-2.5 transition-colors ${
             isActive ? "bg-stone-200" : "hover:bg-stone-100"
           }`
         }
@@ -124,7 +128,12 @@ export function Sidebar({ open = false, onClose }: { open?: boolean; onClose?: (
           <div className="text-xs text-stone-500 truncate">馆长 · 查看资料</div>
         </div>
       </NavLink>
+        <button type="button" aria-label="退出登录" title="退出登录" onClick={() => setLogoutOpen(true)} className="mx-2 flex size-9 shrink-0 items-center justify-center rounded-lg text-stone-500 transition-colors hover:bg-stone-200 hover:text-stone-900">
+          <LogOut className="size-4" />
+        </button>
+      </div>
     </aside>
+    <LogoutDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
     </>
   );
 }

@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Camera, Mail, Phone, Shield, Clock, Key, LogOut, Check } from "lucide-react";
 import { addDaysFromToday } from "../lib/dates";
+import { readSession } from "../lib/auth";
+import { LogoutDialog } from "../components/LogoutDialog";
 
 type Tab = "info" | "security" | "preferences";
 
 export function ProfilePage() {
   const [tab, setTab] = useState<Tab>("info");
   const [saved, setSaved] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const handleSave = () => {
     setSaved(true);
@@ -36,7 +39,7 @@ export function ProfilePage() {
               <span>馆长 · 瑜伽管理演示</span>
             </div>
           </div>
-          <button aria-label="退出登录" className="mb-1 ml-auto h-9 shrink-0 px-2.5 sm:mb-0 sm:ml-0 sm:px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm flex items-center gap-1.5 text-stone-700">
+          <button type="button" onClick={() => setLogoutOpen(true)} aria-label="退出登录" className="mb-1 ml-auto h-9 shrink-0 px-2.5 sm:mb-0 sm:ml-0 sm:px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm flex items-center gap-1.5 text-stone-700">
             <LogOut className="w-4 h-4" /><span className="hidden sm:inline">退出登录</span>
           </button>
         </div>
@@ -87,7 +90,7 @@ export function ProfilePage() {
         <div className="text-xs text-stone-500 mb-3">仅显示最近 5 次成功登录</div>
         <ul className="divide-y divide-stone-100">
           {[
-            { time: `${addDaysFromToday(0)} 08:12`, ip: "上海 · 218.83.x.x", device: "MacBook · Chrome 124" },
+            { time: readSession()?.signedInAt.slice(0, 16) ?? `${addDaysFromToday(0)} 08:12`, ip: "上海 · 218.83.x.x", device: "当前设备 · 本次登录" },
             { time: `${addDaysFromToday(-1)} 19:54`, ip: "上海 · 218.83.x.x", device: "iPhone · Safari" },
             { time: `${addDaysFromToday(-2)} 09:03`, ip: "上海 · 218.83.x.x", device: "MacBook · Chrome 124" },
           ].map((l) => (
@@ -101,6 +104,7 @@ export function ProfilePage() {
           ))}
         </ul>
       </div>
+      <LogoutDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
     </div>
   );
 }

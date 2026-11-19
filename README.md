@@ -10,6 +10,12 @@ Public **frontend-only** clickable prototype for Yoga Admin Demo UI demos.
 
 After GitHub Pages is enabled: https://k9ox38.github.io/yoga-dashboard-demo/
 
+## Demo sign-in
+
+The admin pages sit behind a demo login page. Use **admin** / **demo1234** (the login page shows them and can fill them in).
+The check runs in the browser only — there is no server, and it protects nothing. The session lasts for the browser tab,
+or 7 days with “7 天内自动登录”. Sign out from the icon next to the profile at the bottom of the sidebar, or from 管理员资料.
+
 ## Local development
 
 ```bash

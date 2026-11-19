@@ -17,8 +17,12 @@ import { ReconciliationPage }   from "./pages/ReconciliationPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { LoginPage } from "./pages/LoginPage";
+import { LogoutPage } from "./pages/LogoutPage";
 
 export const router = createHashRouter([
+  { path: "/login",  Component: LoginPage },
+  { path: "/logout", Component: LogoutPage },
   {
     path: "/",
     Component: Root,

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 import { Sidebar } from "./components/Sidebar";
 import { Topbar } from "./components/Topbar";
 import { ClassModal } from "./components/ClassModal";
 import { SessionModal } from "./components/SessionModal";
 import { InstructorModal } from "./components/InstructorModal";
-import { StoreProvider } from "./store";
+import { readSession } from "./lib/auth";
 import { useStore } from "./store-context";
 
 const meta: Record<string, { title: string; subtitle: string; primary: "class" | "session" | "instructor" | "none" }> = {
@@ -103,10 +103,9 @@ function RootLayout() {
   );
 }
 
+/** Every app page needs a signed-in session; otherwise go to the login page and come back afterwards. */
 export function Root() {
-  return (
-    <StoreProvider>
-      <RootLayout />
-    </StoreProvider>
-  );
+  const location = useLocation();
+  if (!readSession()) return <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
+  return <RootLayout />;
 }
