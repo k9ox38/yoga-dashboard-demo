@@ -188,17 +188,17 @@ export function Orders() {
       {/* Table */}
       <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1140px] table-fixed text-left">
-            <colgroup><col className="w-[175px]" /><col className="w-[140px]" /><col className="w-[170px]" /><col className="w-[100px]" /><col className="w-[165px]" /><col className="w-[110px]" /><col className="w-[170px]" /><col className="w-[110px]" /></colgroup>
-            <thead><tr className="bg-stone-50 border-b border-stone-100 text-xs text-[#6B7280]">
+          {/* Columns size to their content and share any spare width; the table only scrolls when the content itself is wider than the panel. */}
+          <table className="w-full min-w-max text-left">
+            <thead><tr className="whitespace-nowrap bg-stone-50 border-b border-stone-100 text-xs text-[#6B7280]">
               <th className="px-4 py-2.5 font-normal">订单号</th><th className="px-4 py-2.5 font-normal">用户</th><th className="px-4 py-2.5 font-normal">套餐</th><th className="px-4 py-2.5 font-normal">渠道</th><th className="px-4 py-2.5 text-right font-normal">实付金额</th><th className="py-2.5 pl-6 pr-4 font-normal">状态</th><th className="px-4 py-2.5 font-normal">创建时间</th><th className="sticky right-0 z-10 w-[110px] bg-stone-50 px-4 py-2.5 font-normal">操作</th>
             </tr></thead>
             <tbody>{filtered.map((o) => {
               const received = !["待支付", "支付失败", "已关闭"].includes(o.status);
               return <tr key={o.id} onClick={() => setSelectedId(o.id)} className="group h-[62px] cursor-pointer border-b border-stone-100 last:border-0 transition-colors hover:bg-[#f4fbf7]">
-                <td className="px-4 py-3"><span className="block truncate pr-2 font-mono text-xs text-[#6B7280]">{o.orderNo}</span></td>
+                <td className="px-4 py-3"><span className="whitespace-nowrap font-mono text-xs text-[#6B7280]">{o.orderNo}</span></td>
                 <td className="px-4 py-3"><div className="whitespace-nowrap text-sm text-stone-900">{o.userName}</div><div className="whitespace-nowrap text-xs text-[#6B7280]">{o.userPhone}</div></td>
-                <td className="px-4 py-3"><div className="truncate whitespace-nowrap text-sm text-stone-700">{o.packageName}</div><div className="whitespace-nowrap font-mono text-xs text-[#6B7280]">{o.packageCode}</div></td>
+                <td className="px-4 py-3"><div title={o.packageName} className="max-w-[200px] truncate text-sm text-stone-700">{o.packageName}</div><div className="whitespace-nowrap font-mono text-xs text-[#6B7280]">{o.packageCode}</div></td>
                 <td className="whitespace-nowrap px-4 py-3 text-xs text-stone-700">{o.payChannel}</td>
                 <td className="px-4 py-3 text-right tabular-nums">{received ? o.status === "已退款" ? <><div className="whitespace-nowrap text-sm font-medium text-[#6B7280] line-through">¥{o.actualAmount.toLocaleString()}</div><div className="mt-0.5 whitespace-nowrap text-right text-xs text-[#6B7280]">已退 ¥{(o.refundAmount ?? o.actualAmount).toLocaleString()}</div></> : <><div className="whitespace-nowrap text-sm font-semibold text-stone-900">¥{o.actualAmount.toLocaleString()}</div>{o.pointsDeduction > 0 && <div className="mt-0.5 whitespace-nowrap text-right text-xs text-[#6B7280]">积分 -¥{o.pointsDeduction.toLocaleString()}</div>}</> : <span className="text-sm text-[#6B7280]">—</span>}</td>
                 <td className="py-3 pl-6 pr-4"><span className={`inline-flex whitespace-nowrap rounded-full px-2 py-0.5 text-xs ${statusBadge[o.status]}`}>{o.status}</span></td>
