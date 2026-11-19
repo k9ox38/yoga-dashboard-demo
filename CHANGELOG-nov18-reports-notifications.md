@@ -123,3 +123,9 @@ Fixed along the way:
 - Every single-choice dropdown now opens an in-app list (`SelectMenu`) instead of the operating system's menu: white panel, rounded corners, the current choice tinted green with a check, and a hover highlight. Long lists scroll inside a 320px panel.
 - The closed control keeps the width of its longest option, as before. Required pickers in forms (学员, 课程, 教练) show a grey placeholder until something is chosen.
 - Escape closes only the open list, not the dialog or drawer around it. Keyboard use (arrows, Enter, type-to-jump) works as with a native select.
+
+## Time picker
+
+- 排课's 开始时间 and 结束时间 open an in-app picker (`TimeField`) instead of Safari's bare time box: hour and minute columns (5-minute steps) with the current time centred and highlighted green. Arrow keys move through each column.
+- The end-time picker greys out times that aren't after the start, and offers 45 / 60 / 75 / 90 分钟 shortcuts counted from the start.
+- Changing the start time moves the end time with it, so the class keeps its length. The length shows under the fields (课程时长 1 小时 15 分钟).

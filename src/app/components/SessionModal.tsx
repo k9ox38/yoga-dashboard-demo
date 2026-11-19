@@ -7,6 +7,8 @@ import { useStore } from "../store-context";
 import { MemberCardDrawer } from "./MemberCardDrawer";
 import { DateField } from "./DatePicker";
 import { SelectMenu } from "./SelectMenu";
+import { TimeField } from "./TimeField";
+import { durationMinutes, formatDuration, shiftEnd } from "../lib/time";
 
 function makeEmpty(): ClassSession {
   return {
@@ -57,6 +59,7 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
     setValues((p) => ({ ...p, [k]: v }));
 
   const template = templates.find((t) => t.id === values.classId);
+  const classLength = durationMinutes(values.start, values.end);
 
   const handleSubmit = () => {
     const e: Record<string, string> = {};
@@ -122,12 +125,16 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
               <DateField ariaLabel="日期" value={values.date} onChange={(day) => set("date", day)} invalid={Boolean(errors.date)} />
             </Field>
             <Field label="开始时间">
-              <input type="time" value={values.start} onChange={(e) => set("start", e.target.value)} className={inputCls()} />
+              {/* Moving the start keeps the class length, so the end moves with it. */}
+              <TimeField ariaLabel="开始时间" value={values.start} onChange={(start) => setValues((p) => ({ ...p, start, end: shiftEnd(p.start, p.end, start) }))} />
             </Field>
             <Field label="结束时间" error={errors.end}>
-              <input type="time" value={values.end} onChange={(e) => set("end", e.target.value)} className={inputCls(errors.end)} />
+              <TimeField ariaLabel="结束时间" value={values.end} onChange={(end) => set("end", end)} after={values.start} durations={[45, 60, 75, 90]} invalid={Boolean(errors.end)} />
             </Field>
           </div>
+          {classLength !== null && !errors.end && (
+            <p className="-mt-3 text-xs text-stone-500">课程时长 {formatDuration(classLength)}</p>
+          )}
 
           <div>
             <div className="text-xs text-stone-600 mb-2">难度</div>
