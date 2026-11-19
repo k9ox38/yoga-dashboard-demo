@@ -84,7 +84,7 @@ export function InstructorDetail({ instructorId }: { instructorId: string }) {
   };
 
   return (
-    <div className="space-y-5 bg-stone-100 p-5 text-stone-700 lg:p-8">
+    <div className="space-y-5 bg-stone-100 p-4 text-stone-700 sm:p-5 lg:p-8">
       <div className="flex items-center gap-2 text-sm"><Link to="/instructors" className="text-stone-500 hover:text-emerald-700">教练管理</Link><span className="text-stone-300">/</span><span className="font-medium text-stone-900">教练详情</span></div>
 
       <section className="flex flex-wrap items-center justify-between gap-5 rounded-xl border border-stone-200 bg-white p-6">

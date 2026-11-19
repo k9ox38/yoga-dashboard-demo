@@ -1,5 +1,5 @@
 import { NavLink } from "react-router";
-import { LayoutDashboard, Calendar, Users, BookOpen, UserCog, Settings, Flower2, CreditCard, ReceiptText, Bell, ScrollText, PieChart, ArrowLeftRight } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, BookOpen, UserCog, Settings, Flower2, CreditCard, ReceiptText, Bell, ScrollText, PieChart, ArrowLeftRight, X } from "lucide-react";
 
 const NAV_GROUPS: { label?: string; items: { to: string; label: string; icon: React.ComponentType<{ className?: string }> }[] }[] = [
   {
@@ -45,9 +45,19 @@ const NAV_GROUPS: { label?: string; items: { to: string; label: string; icon: Re
   },
 ];
 
-export function Sidebar() {
+/**
+ * From lg (1024px) up the sidebar is a fixed column. Below that it is an off-canvas drawer:
+ * the Topbar's menu button opens it, and the backdrop, the close button, Escape or choosing a
+ * page closes it.
+ */
+export function Sidebar({ open = false, onClose }: { open?: boolean; onClose?: () => void }) {
   return (
-    <aside className="w-56 shrink-0 border-r border-stone-200 bg-stone-50 flex flex-col">
+    <>
+    <div aria-hidden className={`fixed inset-0 z-40 bg-stone-900/40 transition-opacity duration-200 lg:hidden ${open ? "opacity-100" : "pointer-events-none opacity-0"}`} onClick={onClose} />
+    <aside
+      id="app-sidebar"
+      className={`fixed inset-y-0 left-0 z-50 flex w-64 max-w-[85vw] shrink-0 flex-col border-r border-stone-200 bg-stone-50 shadow-xl transition-transform duration-200 lg:static lg:z-auto lg:w-56 lg:max-w-none lg:translate-x-0 lg:shadow-none ${open ? "translate-x-0" : "-translate-x-full"}`}
+    >
       {/* Logo */}
       <div className="px-5 py-4 border-b border-stone-200 flex items-center gap-2.5 shrink-0">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white shrink-0">
@@ -57,6 +67,7 @@ export function Sidebar() {
           <div className="text-sm text-stone-900 truncate">瑜伽管理演示</div>
           <div className="text-xs text-stone-500">管理后台</div>
         </div>
+        <button aria-label="关闭菜单" onClick={onClose} className="ml-auto flex size-8 items-center justify-center rounded-lg text-stone-500 hover:bg-stone-200 hover:text-stone-900 lg:hidden"><X className="size-4" /></button>
       </div>
 
       {/* Nav */}
@@ -77,6 +88,7 @@ export function Sidebar() {
               <NavLink
                 key={to}
                 to={to}
+                onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-2.5 px-2.5 py-2 rounded-lg outline-none focus:outline-none transition-colors text-sm ${
                     isActive
@@ -97,6 +109,7 @@ export function Sidebar() {
       <NavLink
         to="/profile"
         aria-label="查看管理员资料"
+        onClick={onClose}
         className={({ isActive }) =>
           `px-4 py-3.5 border-t border-stone-200 flex items-center gap-2.5 transition-colors shrink-0 ${
             isActive ? "bg-stone-200" : "hover:bg-stone-100"
@@ -112,5 +125,6 @@ export function Sidebar() {
         </div>
       </NavLink>
     </aside>
+    </>
   );
 }

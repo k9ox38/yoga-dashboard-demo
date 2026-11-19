@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { Sidebar } from "./components/Sidebar";
 import { Topbar } from "./components/Topbar";
@@ -32,6 +33,16 @@ function RootLayout() {
     ? { title: "套餐管理", subtitle: "维护线下售卡套餐与价格", primary: "none" as const }
     : meta[pathname] ?? { title: "瑜伽管理演示", subtitle: "管理后台", primary: "none" as const };
   const store = useStore();
+  const [navOpen, setNavOpen] = useState(false);
+
+  // Close the phone/tablet nav drawer whenever the page changes, and on Escape.
+  useEffect(() => { setNavOpen(false); }, [pathname]);
+  useEffect(() => {
+    if (!navOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setNavOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [navOpen]);
 
   const primaryLabel =
     m.primary === "class" ? "新建课程"
@@ -46,9 +57,9 @@ function RootLayout() {
 
   return (
     <div className="size-full flex bg-stone-100">
-      <Sidebar />
+      <Sidebar open={navOpen} onClose={() => setNavOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar title={m.title} subtitle={m.subtitle} primaryLabel={primaryLabel} onPrimary={onPrimary} />
+        <Topbar title={m.title} subtitle={m.subtitle} primaryLabel={primaryLabel} onPrimary={onPrimary} navOpen={navOpen} onMenu={() => setNavOpen(true)} />
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>

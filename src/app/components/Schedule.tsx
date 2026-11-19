@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Download, Star, EyeOff, Users, LayoutGrid, List } from "lucide-react";
 import type { ClassSession, ClassTemplate } from "./data";
 import { downloadCsv } from "../lib/csv";
@@ -137,17 +137,29 @@ function TimelineWeekView({ days, sessions, templates, onEdit, onCreate, goToDay
   const [hover, setHover] = useState<{ col: number; y: number } | null>(null);
   const snap = hover ? yToSnap(hover.y) : null;
 
+  // On narrow screens the week scrolls sideways; bring today's column into view.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const todayCol = days.findIndex(isToday);
+  useEffect(() => {
+    const box = scrollRef.current;
+    const col = box?.querySelector<HTMLElement>("[data-today]");
+    if (box && col && box.scrollWidth > box.clientWidth) box.scrollLeft += col.getBoundingClientRect().left - box.getBoundingClientRect().left - 56;
+  }, [todayCol]);
+
   return (
-    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-      {/* ── Day headers (fixed, not scrolling) ── */}
-      <div className="flex border-b border-stone-100">
+    // One scroll box for both axes: the day header sticks to the top and the time column to the
+    // left, so neither scrolls away when the week is wider than the screen.
+    <div ref={scrollRef} className="bg-white rounded-xl border border-stone-200 overflow-auto overscroll-x-contain" style={{ maxHeight: 630 }}>
+      {/* ── Day headers ── */}
+      <div className="sticky top-0 z-30 flex min-w-[720px] border-b border-stone-100 bg-white">
         {/* gutter spacer */}
-        <div className="w-14 shrink-0 border-r border-stone-100" />
+        <div className="sticky left-0 z-10 w-14 shrink-0 border-r border-stone-100 bg-white" />
         {days.map((d, i) => {
           const today = isToday(d);
           return (
             <button
               key={i}
+              data-today={today || undefined}
               onClick={() => goToDay(i)}
               className={`flex-1 py-3 text-center border-l border-stone-100 transition-colors ${
                 today ? "bg-emerald-600" : "hover:bg-stone-50"
@@ -172,12 +184,12 @@ function TimelineWeekView({ days, sessions, templates, onEdit, onCreate, goToDay
         })}
       </div>
 
-      {/* ── Scrollable time grid ── */}
-      <div className="overflow-y-auto" style={{ maxHeight: 560 }}>
+      {/* ── Time grid ── */}
+      <div className="min-w-[720px]">
         <div className="flex" style={{ height: TOTAL_H }}>
 
           {/* Time labels column */}
-          <div className="w-14 shrink-0 relative border-r border-stone-100" style={{ height: TOTAL_H }}>
+          <div className="sticky left-0 z-[25] w-14 shrink-0 border-r border-stone-100 bg-white" style={{ height: TOTAL_H }}>
             {Array.from({ length: HOUR_COUNT + 1 }, (_, i) => (
               <div
                 key={i}
@@ -356,10 +368,10 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
   }
 
   return (
-    <div className="p-8 space-y-4">
+    <div className="space-y-4 p-4 sm:p-6 lg:p-8">
 
       {/* ── Top controls ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <button
             onClick={() => { setWeekOffset(w => w - 1); setSelectedDay(0); }}
@@ -367,8 +379,8 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
           >
             <ChevronLeft className="w-4 h-4 text-stone-600" />
           </button>
-          <span className="text-sm text-stone-700 px-1 tabular-nums">
-            {monday.getFullYear()} 年 &nbsp;{startLabel} – {endLabel}
+          <span className="whitespace-nowrap px-1 text-sm tabular-nums text-stone-700">
+            <span className="hidden sm:inline">{monday.getFullYear()} 年 &nbsp;</span>{startLabel} – {endLabel}
           </span>
           <button
             onClick={() => { setWeekOffset(w => w + 1); setSelectedDay(0); }}
@@ -378,7 +390,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
           </button>
           <button
             onClick={() => { setWeekOffset(0); setSelectedDay(todayIndex); }}
-            className="h-8 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-xs text-stone-600 transition-colors"
+            className="h-8 shrink-0 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-xs text-stone-600 transition-colors"
           >
             今天
           </button>
@@ -409,9 +421,10 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
 
           <button
             onClick={exportWeek}
-            className="h-9 px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-sm flex items-center gap-1.5 transition-colors"
+            aria-label="导出课程表"
+            className="h-9 px-2.5 sm:px-3 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-sm flex items-center gap-1.5 whitespace-nowrap transition-colors"
           >
-            <Download className="w-4 h-4" /> 导出课程表
+            <Download className="w-4 h-4" /><span className="hidden sm:inline">导出课程表</span>
           </button>
         </div>
       </div>

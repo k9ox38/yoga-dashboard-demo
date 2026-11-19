@@ -92,16 +92,16 @@ export function Reservations() {
   const bookingEligibility = bookingMember && bookingSession ? canBook(bookingMember, bookingSession) : null;
 
   return (
-    <div className="min-h-full space-y-5 bg-booking-canvas p-5 font-['Noto_Sans_SC',sans-serif] text-slate-700 lg:p-7 xl:p-8">
+    <div className="min-h-full space-y-5 bg-booking-canvas p-4 sm:p-5 font-['Noto_Sans_SC',sans-serif] text-slate-700 lg:p-7 xl:p-8">
       <div className="flex flex-wrap items-center justify-between gap-4 pb-1">
-        <div><h1 className="text-3xl font-semibold text-slate-950">预约管理</h1><p className="mt-2 text-sm text-slate-500">查看预约、管理到课与取消记录</p></div>
+        <div><h1 className="text-2xl font-semibold text-slate-950 sm:text-3xl">预约管理</h1><p className="mt-2 text-sm text-slate-500">查看预约、管理到课与取消记录</p></div>
         <button className={primaryClass} onClick={() => { setMemberId(""); setSessionId(""); setNotice(""); setDrawer("create"); }}><Plus className="size-5" />代学员预约</button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        {stats.map(({ label, value, icon: Icon }, index) => <div key={label} className="flex items-center gap-5 rounded-xl border border-white bg-white px-5 py-6 xl:px-6">
-          <div className={`flex size-16 shrink-0 items-center justify-center rounded-full ${index === 3 ? "bg-orange-50 text-amber-700" : "bg-booking-soft text-emerald-700"}`}><Icon className="size-7" strokeWidth={1.7} /></div>
-          <div><p className="text-sm text-slate-500">{label}</p><p className="mt-1 text-3xl font-semibold tabular-nums text-slate-950">{value}</p></div>
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+        {stats.map(({ label, value, icon: Icon }, index) => <div key={label} className="flex min-w-0 items-center gap-3 rounded-xl border border-white bg-white p-4 sm:gap-5 sm:px-5 sm:py-6 xl:px-6">
+          <div className={`flex size-10 shrink-0 items-center justify-center rounded-full sm:size-16 ${index === 3 ? "bg-orange-50 text-amber-700" : "bg-booking-soft text-emerald-700"}`}><Icon className="size-5 sm:size-7" strokeWidth={1.7} /></div>
+          <div className="min-w-0"><p className="text-sm text-slate-500">{label}</p><p className="mt-1 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-950">{value}</p></div>
         </div>)}
       </div>
 

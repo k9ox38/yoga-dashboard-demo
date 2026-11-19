@@ -17,16 +17,16 @@ export function Settings() {
   const [tab, setTab] = useState<Tab>("brand");
 
   return (
-    <div className="p-8 flex gap-6 items-start">
-      {/* 左侧 Tab 导航 */}
-      <nav className="w-44 shrink-0 bg-white rounded-xl border border-stone-200 overflow-hidden">
+    <div className="flex flex-col gap-4 p-4 sm:p-6 lg:flex-row lg:items-start lg:gap-6 lg:p-8">
+      {/* 左侧 Tab 导航（窄屏为横向滚动的标签条） */}
+      <nav className="flex overflow-x-auto rounded-xl border border-stone-200 bg-white lg:block lg:w-44 lg:shrink-0 lg:overflow-hidden">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`w-full text-left px-4 py-3 text-sm border-b border-stone-100 last:border-0 transition-colors ${
+            className={`shrink-0 whitespace-nowrap px-4 py-3 text-sm transition-colors lg:w-full lg:border-b lg:border-stone-100 lg:text-left lg:last:border-0 ${
               tab === t.id
-                ? "bg-emerald-50 text-emerald-700 border-l-2 border-l-emerald-600"
+                ? "bg-emerald-50 text-emerald-700 shadow-[inset_0_-2px_0_var(--color-emerald-600)] lg:border-l-2 lg:border-l-emerald-600 lg:shadow-none"
                 : "text-stone-600 hover:bg-stone-50"
             }`}
           >
@@ -55,13 +55,13 @@ function BrandSection() {
   return (
     <>
       <Card title="基础资料" desc="馆所对外展示的核心信息">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="馆所名称"><input defaultValue="瑜伽管理演示" className={inp()} /></Field>
           <Field label="联系电话"><input defaultValue="+86 21 5588 0099" className={inp()} /></Field>
-          <Field label="馆所地址" className="col-span-2">
+          <Field label="馆所地址" className="sm:col-span-2">
             <input defaultValue="上海市徐汇区安福路 200 号" className={inp()} />
           </Field>
-          <Field label="品牌简介" className="col-span-2">
+          <Field label="品牌简介" className="sm:col-span-2">
             <textarea
               defaultValue="本馆致力于提供专业、安全、温暖的练习空间，服务都市练习者。"
               rows={2}
@@ -87,11 +87,11 @@ function PhotoWall() {
     { id: 3, bg: "from-stone-200 to-stone-300" },
   ];
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {placeholders.map((p) => (
         <div key={p.id} className={`relative rounded-lg overflow-hidden bg-gradient-to-br ${p.bg} aspect-video group`}>
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-          <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 transition-opacity">
             <button className="w-6 h-6 rounded bg-white/90 flex items-center justify-center text-stone-600 hover:bg-white">
               <GripVertical className="w-3 h-3" />
             </button>
@@ -313,7 +313,7 @@ function AdvancedSection() {
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-      <div className="flex items-start justify-between px-5 py-4 border-b border-stone-100">
+      <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-stone-100">
         <div>
           <div className="text-sm text-stone-900">高级配置</div>
           <div className="text-xs text-stone-500 mt-0.5">面向开发者与系统管理员的原始配置项，修改前请确认影响范围</div>
@@ -323,6 +323,7 @@ function AdvancedSection() {
         </button>
       </div>
 
+      <div className="overflow-x-auto"><div className="min-w-[560px]">
       {/* 表头 */}
       <div className="grid grid-cols-[1fr_160px_100px_72px] px-5 py-2 bg-stone-50 border-b border-stone-100 text-xs text-stone-500">
         <div>配置项 Key</div>
@@ -360,7 +361,7 @@ function AdvancedSection() {
             <span className="text-xs text-stone-700 font-mono truncate pr-3">{c.key}</span>
             <span className="text-xs text-stone-500 truncate pr-3">{c.value}</span>
             <span className="text-xs text-stone-400">{c.updatedAt}</span>
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100 transition-opacity">
               <button onClick={() => startEdit(c)} className="w-7 h-7 rounded border border-stone-200 hover:bg-stone-100 flex items-center justify-center text-stone-500">
                 <Pencil className="w-3 h-3" />
               </button>
@@ -371,6 +372,7 @@ function AdvancedSection() {
           </div>
         )
       ))}
+      </div></div>
     </div>
   );
 }

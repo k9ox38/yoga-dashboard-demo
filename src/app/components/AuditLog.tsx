@@ -129,7 +129,7 @@ export function AuditLog() {
   const maxCount = actionDist[0]?.[1] ?? 1;
 
   return (
-    <div className="p-8 space-y-5">
+    <div className="space-y-4 p-4 sm:space-y-5 sm:p-6 lg:p-8">
 
       {/* Filter bar */}
       <div className="flex items-center gap-2 flex-wrap">
@@ -150,11 +150,11 @@ export function AuditLog() {
       </div>
 
       {/* Stats + Top breakdown side-by-side */}
-      <div className="grid grid-cols-[1fr_320px] gap-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
 
         {/* Left: 4 stat cards, 2 × 2 so they fill the height of the distribution card */}
         <div>
-          <div className="grid h-full grid-cols-2 grid-rows-2 gap-4">
+          <div className="grid h-full grid-cols-2 grid-rows-2 gap-3 sm:gap-4">
             <StatCard icon={<Activity className="w-4 h-4 text-white" />} accent="bg-stone-700" label="日志总数" value={String(stats.total)} />
             <StatCard icon={<Users className="w-4 h-4 text-white" />} accent="bg-indigo-600" label="操作人数" value={String(stats.operators)} />
             <StatCard icon={<Shield className="w-4 h-4 text-white" />} accent="bg-sky-600" label="操作类型" value={String(stats.actionTypes)} />
@@ -189,6 +189,7 @@ export function AuditLog() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+        <div className="overflow-x-auto"><div className="min-w-[860px]">
         <div className="grid grid-cols-[80px_80px_100px_80px_130px_148px_1fr_60px] px-4 py-2.5 bg-stone-50 border-b border-stone-100 text-xs text-stone-500">
           <div>ID</div>
           <div>操作类型</div>
@@ -230,9 +231,10 @@ export function AuditLog() {
             </div>
           </div>
         ))}
+        </div></div>
 
         {/* Footer */}
-        <div className="px-4 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center justify-between">
+        <div className="px-4 py-2.5 bg-stone-50 border-t border-stone-100 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
           <span className="text-xs text-stone-400">共 {filtered.length} 条记录</span>
           <span className="text-xs text-stone-300">只读 · 审计日志不可编辑或删除</span>
         </div>
@@ -352,9 +354,9 @@ function JsonBlock({ data, theme }: { data: Record<string, unknown>; theme: "bef
 
 function StatCard({ icon, accent, label, value }: { icon: React.ReactNode; accent: string; label: string; value: string }) {
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-5 flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${accent}`}>{icon}</div>
-      <div>
+    <div className="min-w-0 bg-white rounded-xl border border-stone-200 p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
+      <div className={`size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 ${accent}`}>{icon}</div>
+      <div className="min-w-0">
         <div className="text-xs text-stone-500">{label}</div>
         <div className="mt-0.5 text-2xl text-stone-900 leading-tight tabular-nums">{value}</div>
       </div>

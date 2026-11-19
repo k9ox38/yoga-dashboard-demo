@@ -66,3 +66,37 @@
 - One primary green: the dark teal `booking-primary` on 会员, 预约管理 and the card drawer, the darker green on 套餐 and 数据报表, and the black buttons on 对账, 设置 and the notice archive confirm all use `emerald-600` (hover `emerald-700`), like the sidebar. The `--booking-primary` token is set to the same green. Irreversible money and close actions (确认退款, 发起退款, 关闭订单) are rose instead of blue or black. The audit detail modal uses a light header and light before/after panels.
 - 苏菲娅 is disabled, so her upcoming 空中吊绳 class (s5) and its booking were removed from the seed. The audit log records the cancellation right after the coach was disabled.
 - 订单管理: the table no longer uses fixed column widths that added up to 1140px. Columns size to their content and share the spare width, so all eight columns, including 创建时间, fit without scrolling from about 1200px wide. Narrower windows still scroll sideways with 操作 pinned. Long package names are cut off with an ellipsis at 200px and show in full on hover.
+
+## Phones and tablets
+
+Checked every page at 360, 390, 768, 1024 and 1280px in WebKit. No page scrolls sideways; wide tables scroll inside their own panel.
+
+- **Navigation:** below 1024px the sidebar is a drawer, opened from the ☰ button in the top bar. It closes on the backdrop, the ✕ button, Escape, or picking a page.
+- **Top bar:** shorter on phones, with less padding and the subtitle hidden.
+  - The search becomes an icon that opens a full-width search field.
+  - The notifications panel spans the screen.
+  - The page action button (排课 / 新建课程 / 新增教练) shows only its + icon.
+- **Page padding:** tighter on phones, `p-4 sm:p-6 lg:p-8`.
+- **Stat cards:** 2 × 2 on phones (3 across on 套餐管理), with smaller icons so the labels no longer wrap one character per line. Pages: 概览, 订单, 对账, 会员, 预约管理, 教练, 审计日志.
+- **Two-column sections stack below 1280px:** 概览 charts and lists, 审计日志 stats and distribution, 数据报表 cards. The 数据报表 grids no longer push the page wider than the screen.
+- **Lists:**
+  - 课程 cards show 1 / 2 / 3 per row.
+  - 概览's 今日课程 rows put the fill bar on its own line on phones.
+  - 通知公告, 审计日志 and 设置 › 高级配置 tables now scroll sideways like 订单 and 对账, instead of squeezing their columns. 操作 stays pinned on the right where it was.
+- **排课:**
+  - The toolbar wraps and the export button becomes an icon.
+  - The day view is still the default.
+  - The week view scrolls sideways on narrow screens with the time column and day header pinned, and opens scrolled to today.
+- **设置:** the section list becomes a horizontal tab strip, and forms and the photo wall use fewer columns.
+- **管理员资料:** the header stacks, and the name no longer runs into the banner.
+- **Forms:** the notice form's date fields go to two columns on phones.
+- **Date range picker:** presets sit in one scrollable row on phones, and the popup scrolls instead of running off the bottom of the screen.
+- **套餐 editor:** the save bar spans the full width when the sidebar is hidden (it was offset by the sidebar's width).
+- **会员 filters:** wrap 2 × 2 between 768 and 1279px. They overflowed the card at 1024px.
+
+Fixed along the way:
+
+- The 排课 drawer's 对用户可见 switch knob sat outside the switch in Safari.
+- 设置 edit/delete and photo buttons only appeared on hover, so touch screens could not reach them. They are now always shown on touch screens.
+- 概览's two 查看全部 links did nothing. They now open 排课 and 会员.
+- 管理员资料's 最近登录 list showed April dates. It is now relative to today.

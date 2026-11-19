@@ -16,14 +16,14 @@ type Props = {
 
 export function Classes({ templates, sessionCounts, onEdit, onSchedule }: Props) {
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="text-stone-900">课程目录</div>
           <div className="text-xs text-stone-500">先创建课程，再到课程表上排课</div>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {templates.map((c) => (
           <div key={c.id} className="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
             <div className={`h-20 bg-gradient-to-br ${formatGradient[c.format] ?? "from-stone-300 to-stone-500"} relative flex items-end p-3`}>

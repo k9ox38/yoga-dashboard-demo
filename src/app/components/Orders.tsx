@@ -148,9 +148,9 @@ export function Orders() {
   };
 
   return (
-    <div className="p-8 space-y-5">
+    <div className="space-y-4 sm:space-y-5 p-4 sm:p-6 lg:p-8">
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
         <StatCard selected={fStatus === "已支付"} onClick={() => setFStatus(fStatus === "已支付" ? "" : "已支付")} icon={<span className="text-base font-semibold leading-none text-white">¥</span>} accent="bg-emerald-600" label="总收入" value={`¥${stats.revenue.toLocaleString()}`} sub="已支付订单合计" />
         <StatCard selected={!fStatus} onClick={() => setFStatus("")} icon={<CheckCircle2 className="w-4 h-4 text-white" />} accent="bg-teal-500" label="总订单数" value={String(stats.total)} sub="全部状态" />
         <StatCard selected={fStatus === "待支付"} onClick={() => setFStatus(fStatus === "待支付" ? "" : "待支付")} icon={<Clock className="w-4 h-4 text-white" />} accent="bg-amber-500" label="待支付" value={String(stats.pendingPay)} sub="等待用户支付" />
@@ -381,8 +381,8 @@ function ConfirmModal({ title, desc, confirmLabel, confirmCls, onClose, onConfir
 
 function StatCard({ icon, accent, label, value, sub, selected, onClick }: { icon: React.ReactNode; accent: string; label: string; value: string; sub: string; selected: boolean; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} aria-pressed={selected} className={`rounded-xl border p-5 flex w-full items-start gap-4 text-left transition-colors ${selected ? "border-emerald-500 bg-emerald-50/70" : "border-stone-200 bg-white hover:border-stone-300"}`}>
-      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${accent}`}>{icon}</div>
+    <button type="button" onClick={onClick} aria-pressed={selected} className={`rounded-xl border p-4 sm:p-5 flex w-full min-w-0 items-start gap-3 sm:gap-4 text-left transition-colors ${selected ? "border-emerald-500 bg-emerald-50/70" : "border-stone-200 bg-white hover:border-stone-300"}`}>
+      <div className={`size-8 sm:size-9 rounded-lg flex items-center justify-center shrink-0 ${accent}`}>{icon}</div>
       <div className="min-w-0">
         <div className="text-xs text-stone-500">{label}</div>
         <div className="text-xl text-stone-900 mt-0.5">{value}</div>

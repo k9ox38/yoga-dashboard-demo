@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Camera, Mail, Phone, Shield, Clock, Key, LogOut, Check } from "lucide-react";
+import { addDaysFromToday } from "../lib/dates";
 
 type Tab = "info" | "security" | "preferences";
 
@@ -13,29 +14,30 @@ export function ProfilePage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl space-y-4">
+    <div className="max-w-4xl space-y-4 p-4 sm:p-6 lg:p-8">
       <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
         <div className="h-28 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600" />
-        <div className="px-6 pb-6 -mt-12 flex items-end gap-4">
-          <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-300 to-teal-600 ring-4 ring-white flex items-center justify-center text-white text-2xl">
+        <div className="flex flex-wrap items-end gap-3 px-4 pb-5 sm:flex-nowrap sm:gap-4 sm:px-6 sm:pb-6">
+          {/* Only the avatar overlaps the banner; the name and role sit below it. */}
+          <div className="relative -mt-10 shrink-0 self-start sm:-mt-12">
+            <div className="size-20 sm:size-24 rounded-full bg-gradient-to-br from-emerald-300 to-teal-600 ring-4 ring-white flex items-center justify-center text-white text-2xl">
               林
             </div>
             <button className="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-white border border-stone-200 hover:bg-stone-50 flex items-center justify-center text-stone-600">
               <Camera className="w-3.5 h-3.5" />
             </button>
           </div>
-          <div className="flex-1 pb-2">
+          <div className="order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1 sm:pt-3">
             <div className="text-stone-900 text-lg">林梅</div>
-            <div className="text-sm text-stone-500 flex items-center gap-3">
+            <div className="text-sm text-stone-500 flex flex-wrap items-center gap-x-3 gap-y-1">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs">
                 <Shield className="w-3 h-3" /> 超级管理员
               </span>
               <span>馆长 · 瑜伽管理演示</span>
             </div>
           </div>
-          <button className="h-9 px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm flex items-center gap-1.5 text-stone-700">
-            <LogOut className="w-4 h-4" /> 退出登录
+          <button aria-label="退出登录" className="mb-1 ml-auto h-9 shrink-0 px-2.5 sm:mb-0 sm:ml-0 sm:px-3 rounded-lg border border-stone-200 hover:bg-stone-50 text-sm flex items-center gap-1.5 text-stone-700">
+            <LogOut className="w-4 h-4" /><span className="hidden sm:inline">退出登录</span>
           </button>
         </div>
       </div>
@@ -61,13 +63,13 @@ export function ProfilePage() {
           ))}
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="space-y-5 p-4 sm:p-6">
           {tab === "info" && <InfoTab />}
           {tab === "security" && <SecurityTab />}
           {tab === "preferences" && <PreferencesTab />}
         </div>
 
-        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-stone-200 bg-stone-50 rounded-b-xl">
+        <div className="flex items-center justify-end gap-2 px-4 py-4 sm:px-6 border-t border-stone-200 bg-stone-50 rounded-b-xl">
           {saved && (
             <span className="flex items-center gap-1.5 text-sm text-emerald-700 mr-2">
               <Check className="w-4 h-4" /> 已保存
@@ -85,11 +87,11 @@ export function ProfilePage() {
         <div className="text-xs text-stone-500 mb-3">仅显示最近 5 次成功登录</div>
         <ul className="divide-y divide-stone-100">
           {[
-            { time: "2026-04-30 08:12", ip: "上海 · 218.83.x.x", device: "MacBook · Chrome 124" },
-            { time: "2026-04-29 19:54", ip: "上海 · 218.83.x.x", device: "iPhone · Safari" },
-            { time: "2026-04-28 09:03", ip: "上海 · 218.83.x.x", device: "MacBook · Chrome 124" },
+            { time: `${addDaysFromToday(0)} 08:12`, ip: "上海 · 218.83.x.x", device: "MacBook · Chrome 124" },
+            { time: `${addDaysFromToday(-1)} 19:54`, ip: "上海 · 218.83.x.x", device: "iPhone · Safari" },
+            { time: `${addDaysFromToday(-2)} 09:03`, ip: "上海 · 218.83.x.x", device: "MacBook · Chrome 124" },
           ].map((l) => (
-            <li key={l.time} className="py-2.5 flex items-center justify-between text-sm">
+            <li key={l.time} className="py-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 text-sm">
               <div className="flex items-center gap-2 text-stone-700">
                 <Clock className="w-3.5 h-3.5 text-stone-400" />
                 {l.time}
@@ -106,7 +108,7 @@ export function ProfilePage() {
 function InfoTab() {
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="姓名" value="林梅" />
         <Field label="昵称" value="Linda" />
         <Field label="邮箱" value="admin@example.com" icon={Mail} />
@@ -166,7 +168,7 @@ function PreferencesTab() {
       <Toggle label="日报推送" desc="每天 21:00 推送当日经营摘要。" />
       <Toggle label="周报邮件" desc="每周一 09:00 推送上周数据周报。" defaultOn />
 
-      <div className="grid grid-cols-2 gap-4 pt-2">
+      <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2">
         <Select label="界面语言" value="简体中文" options={["简体中文", "English"]} />
         <Select label="时区" value="Asia/Shanghai (UTC+8)" options={["Asia/Shanghai (UTC+8)", "Asia/Hong_Kong (UTC+8)", "Asia/Singapore (UTC+8)"]} />
       </div>
@@ -176,7 +178,7 @@ function PreferencesTab() {
 
 function Field({ label, value, icon: Icon, disabled, textarea }: { label: string; value: string; icon?: React.ComponentType<{ className?: string }>; disabled?: boolean; textarea?: boolean }) {
   return (
-    <label className={`block ${textarea ? "col-span-2" : ""}`}>
+    <label className={`block ${textarea ? "sm:col-span-2" : ""}`}>
       <span className="text-xs text-stone-600">{label}</span>
       <div className="mt-1 relative">
         {Icon && <Icon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />}

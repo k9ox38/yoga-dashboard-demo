@@ -63,10 +63,10 @@ export function Instructors({ instructors, onEdit }: Props) {
   ];
 
   return (
-    <div className="space-y-5 p-5 lg:p-8">
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+    <div className="space-y-5 p-4 sm:p-5 lg:p-8">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {stats.map(({ label, value, sub, icon: Icon, accent }) => (
-          <div key={label} className="flex items-start gap-4 rounded-xl border border-stone-200 bg-white p-5">
+          <div key={label} className="flex min-w-0 items-start gap-3 rounded-xl border border-stone-200 bg-white p-4 sm:gap-4 sm:p-5">
             <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${accent}`}><Icon className="size-4 text-white" /></div>
             <div className="min-w-0"><div className="text-xs text-stone-500">{label}</div><div className="mt-0.5 text-xl text-stone-900">{value}</div><div className="mt-0.5 text-xs text-stone-400">{sub}</div></div>
           </div>
@@ -75,7 +75,7 @@ export function Instructors({ instructors, onEdit }: Props) {
 
       <section className="space-y-4 rounded-xl border border-stone-200 bg-white p-4">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="relative min-w-64 flex-1 lg:max-w-sm">
+          <div className="relative w-full sm:w-auto sm:min-w-64 sm:flex-1 lg:max-w-sm">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
             <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="搜索教练姓名 / 手机号" className="h-10 border-stone-200 bg-white pl-9" />
           </div>

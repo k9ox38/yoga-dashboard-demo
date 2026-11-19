@@ -88,7 +88,7 @@ const singleClassNames: Partial<ClassNames> = {
 };
 
 const popoverClass =
-  "z-[70] w-auto max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border-stone-200 bg-white p-0 text-stone-900 shadow-xl";
+  "z-[70] w-auto max-w-[calc(100vw-2rem)] max-h-[var(--radix-popover-content-available-height)] overflow-y-auto overscroll-contain rounded-xl border-stone-200 bg-white p-0 text-stone-900 shadow-xl";
 
 /** Round the range band where it is cut by a month edge rather than a week edge. */
 const monthEdgeModifiers = {
@@ -198,7 +198,7 @@ export function DateRangePicker({
       <PopoverContent align="start" sideOffset={6} collisionPadding={16} className={popoverClass}>
         <div className="flex flex-col md:flex-row">
           {presets.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 border-b border-stone-100 p-3 md:w-32 md:flex-col md:flex-nowrap md:gap-0.5 md:border-b-0 md:border-r">
+            <div className="flex gap-1.5 overflow-x-auto border-b border-stone-100 p-3 md:w-32 md:flex-col md:gap-0.5 md:overflow-visible md:border-b-0 md:border-r">
               <div className="hidden px-2.5 pb-1.5 pt-1 text-xs text-stone-400 md:block">快捷选择</div>
               {presets.map((preset) => (
                 <button
@@ -207,7 +207,7 @@ export function DateRangePicker({
                   aria-pressed={activePreset === preset}
                   onClick={() => choosePreset(preset)}
                   className={cn(
-                    "rounded-lg px-2.5 py-1.5 text-left text-sm font-normal transition-colors",
+                    "shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-left text-sm font-normal transition-colors",
                     activePreset === preset ? "bg-emerald-50 font-medium text-emerald-700" : "text-stone-600 hover:bg-stone-100",
                   )}
                 >

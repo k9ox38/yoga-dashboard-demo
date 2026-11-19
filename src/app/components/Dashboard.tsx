@@ -1,4 +1,5 @@
 import { TrendingUp, Users, CalendarCheck, DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useNavigate } from "react-router";
 import { AreaChart, Area, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { weeklyBookings } from "./data";
 import { useStore } from "../store-context";
@@ -10,10 +11,10 @@ import { AT_RISK_DAYS, atRiskMembers, recentlyActiveMembers } from "../lib/repor
 
 function StatCard({ label, value, delta, up = true, icon: Icon, accent, period = "较上周" }: { label: string; value: string; delta?: string; up?: boolean; icon: React.ComponentType<{ className?: string }>; accent: string; period?: string }) {
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-5">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-stone-500">{label}</span>
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${accent}`}>
+    <div className="min-w-0 bg-white rounded-xl border border-stone-200 p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-2">
+        <span className="min-w-0 text-sm text-stone-500">{label}</span>
+        <div className={`size-8 shrink-0 rounded-lg flex items-center justify-center sm:size-9 ${accent}`}>
           <Icon className="w-4 h-4 text-white" />
         </div>
       </div>
@@ -32,6 +33,7 @@ function StatCard({ label, value, delta, up = true, icon: Icon, accent, period =
 
 export function Dashboard() {
   const { sessions, templates, members, reservations, packages } = useStore();
+  const navigate = useNavigate();
   const tplById = (id: string) => templates.find((t) => t.id === id);
   const todayKey = localDate();
   const todays = sessions
@@ -57,8 +59,8 @@ export function Dashboard() {
     return items;
   });
   return (
-    <div className="p-8 space-y-6">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="space-y-4 p-4 sm:space-y-6 sm:p-6 lg:p-8">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <StatCard label="今日预约" value={String(todayReservations.length)} icon={CalendarCheck} accent="bg-emerald-500" period={`今日 ${todays.length} 节课`} />
         <div className="bg-white rounded-xl border border-stone-200 p-5">
           <div className="flex items-center justify-between">
@@ -78,8 +80,8 @@ export function Dashboard() {
         <StatCard label="本月营收" value={`¥${monthRevenue.toLocaleString()}`} icon={DollarSign} accent="bg-amber-500" period="已支付订单 · 本月至今" />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 min-w-0 bg-white rounded-xl border border-stone-200 p-5">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2 bg-white rounded-xl border border-stone-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-stone-900">本周预约</div>
@@ -131,14 +133,14 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 min-w-0 bg-white rounded-xl border border-stone-200 p-5">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2 bg-white rounded-xl border border-stone-200 p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
               <div className="text-stone-900">今日课程</div>
               <div className="text-xs text-stone-500">实时预约情况</div>
             </div>
-            <button className="text-xs text-emerald-700 hover:underline">查看全部</button>
+            <button onClick={() => navigate("/schedule")} className="text-xs text-emerald-700 hover:underline">查看全部</button>
           </div>
           <div className="space-y-3">
             {todays.length === 0 && (
@@ -152,23 +154,23 @@ export function Dashboard() {
               const booked = s.booked;
               const pct = cap ? Math.round((booked / cap) * 100) : 0;
               return (
-                <div key={s.id} className="flex items-center gap-4 p-3 rounded-lg border border-stone-200 hover:border-emerald-300 transition-colors">
-                  <div className="w-14 text-center">
+                <div key={s.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 p-3 rounded-lg border border-stone-200 hover:border-emerald-300 transition-colors">
+                  <div className="w-14 shrink-0 text-center">
                     <div className="text-stone-900 text-sm">{s.start}</div>
                     <div className="text-xs text-stone-400">{s.end}</div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <div className="text-stone-900 text-sm truncate">{t?.name ?? "未关联课程"}</div>
+                      <div className="min-w-0 truncate text-stone-900 text-sm">{t?.name ?? "未关联课程"}</div>
                       {t && (
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${t.format === "私教" ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}>
+                        <span className={`shrink-0 whitespace-nowrap text-xs px-1.5 py-0.5 rounded ${t.format === "私教" ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}>
                           {t.format}
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-stone-500">{s.instructor} · {s.room}{t ? ` · ${t.level}` : ""}</div>
+                    <div className="truncate text-xs text-stone-500">{s.instructor} · {s.room}{t ? ` · ${t.level}` : ""}</div>
                   </div>
-                  <div className="w-40">
+                  <div className="w-full sm:w-40 sm:shrink-0">
                     <div className="flex items-center justify-between text-xs text-stone-600 mb-1">
                       <span>{booked}/{cap}</span>
                       <span>{pct}%</span>
@@ -189,7 +191,7 @@ export function Dashboard() {
               <div className="text-stone-900">会员卡即将到期</div>
               <div className="text-xs text-stone-500">未来 14 天内到期</div>
             </div>
-            <button className="text-xs text-emerald-700 hover:underline">查看全部</button>
+            <button onClick={() => navigate("/members")} className="text-xs text-emerald-700 hover:underline">查看全部</button>
           </div>
           {(() => {
             const groups = [

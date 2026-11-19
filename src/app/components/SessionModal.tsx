@@ -172,7 +172,7 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
               onClick={() => set("isVisible", !values.isVisible)}
               className={`relative w-10 h-5 rounded-full transition-colors ${values.isVisible ? "bg-emerald-600" : "bg-stone-200"}`}
             >
-              <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${values.isVisible ? "translate-x-5" : "translate-x-0.5"}`} />
+              <span className={`absolute left-0 top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${values.isVisible ? "translate-x-5" : "translate-x-0.5"}`} />
             </button>
           </div>
 

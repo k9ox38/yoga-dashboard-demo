@@ -46,15 +46,15 @@ export function Packages() {
   ];
 
   return (
-    <div className="min-h-full bg-[#f4f7f4] p-6 text-stone-800 lg:p-8">
+    <div className="min-h-full bg-[#f4f7f4] p-4 text-stone-800 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-[1440px] space-y-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><h1 className="text-2xl font-semibold text-stone-950">套餐管理</h1><p className="mt-1 text-sm text-stone-500">维护线下售卡套餐与价格</p></div>
           <button onClick={() => navigate("/packages/new")} className={primaryClass}><Plus className="size-4" />新增套餐</button>
         </div>
         <InfoBar>管理员开卡时选择套餐，系统生成对应会员卡。</InfoBar>
-        <div className="grid gap-4 md:grid-cols-3">
-          {stats.map(({ label, value, icon: Icon, tone }) => <div key={label} className={`${cardClass} flex items-center gap-4 p-5`}><span className={`flex size-12 items-center justify-center rounded-full ${tone}`}><Icon className="size-5" /></span><div><div className="text-sm text-stone-500">{label}</div><div className="mt-1 text-2xl font-semibold tabular-nums text-stone-950">{value}</div></div></div>)}
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          {stats.map(({ label, value, icon: Icon, tone }) => <div key={label} className={`${cardClass} flex min-w-0 flex-col items-start gap-2 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-5`}><span className={`flex size-9 shrink-0 items-center justify-center rounded-full sm:size-12 ${tone}`}><Icon className="size-4 sm:size-5" /></span><div className="min-w-0"><div className="text-sm text-stone-500">{label}</div><div className="mt-1 text-2xl font-semibold tabular-nums text-stone-950">{value}</div></div></div>)}
         </div>
         <div className="flex gap-7 border-b border-stone-200">
           {(["products", "cards"] as const).map((item) => <button key={item} onClick={() => setTab(item)} className={`-mb-px border-b-2 px-1 py-3 text-sm font-medium ${tab === item ? "border-emerald-700 text-emerald-700" : "border-transparent text-stone-500 hover:text-stone-800"}`}>{item === "products" ? "套餐产品" : "用户卡包"}</button>)}
@@ -218,7 +218,7 @@ export function PackageEditor({ readOnly = false }: { readOnly?: boolean }) {
   if (!isNew && !initial) return <div className="p-8 text-sm text-stone-500">未找到该套餐。</div>;
 
   return <div className="min-h-full bg-[#f4f7f4] pb-24 text-sm text-stone-800">
-    <div className="mx-auto max-w-[1280px] space-y-5 p-6 lg:p-8">
+    <div className="mx-auto max-w-[1280px] space-y-5 p-4 sm:p-6 lg:p-8">
       <div className="flex items-start justify-between gap-4"><div><div className="mb-3 flex items-center gap-2 text-sm text-stone-500"><button onClick={() => navigate("/packages")} className="hover:text-emerald-700">套餐管理</button><span>/</span><span>{readOnly ? "查看套餐" : isNew ? "新增套餐" : "编辑套餐"}</span></div><h1 className="text-2xl font-semibold text-stone-950">{readOnly ? "查看套餐" : isNew ? "新增套餐" : "编辑套餐"}</h1><p className="mt-1 text-sm text-stone-500">{initial ? `${initial.name} · ${initial.code}` : "创建新的线下售卡套餐"}</p></div>{readOnly && initial && <button onClick={() => navigate(`/packages/${initial.id}/edit`)} className={primaryClass}>编辑</button>}</div>
       {!isNew && !readOnly && <InfoBar>修改仅影响后续购卡，不改变已售会员卡</InfoBar>}
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
@@ -243,7 +243,7 @@ export function PackageEditor({ readOnly = false }: { readOnly?: boolean }) {
         </aside>
       </div>
     </div>
-    <div className="fixed bottom-0 right-0 left-56 z-30 border-t border-stone-200 bg-white/95 px-6 py-3 shadow-[0_-4px_18px_rgba(0,0,0,0.04)] backdrop-blur"><div className="mx-auto flex max-w-[1280px] justify-end gap-3"><button onClick={() => navigate("/packages")} className={secondaryClass}>{readOnly ? "返回" : "取消"}</button>{!readOnly && <button onClick={save} className={primaryClass}>{isNew ? "创建套餐" : "保存修改"}</button>}</div></div>
+    <div className="fixed bottom-0 right-0 left-0 z-30 border-t border-stone-200 bg-white/95 px-4 py-3 sm:px-6 lg:left-56 shadow-[0_-4px_18px_rgba(0,0,0,0.04)] backdrop-blur"><div className="mx-auto flex max-w-[1280px] justify-end gap-3"><button onClick={() => navigate("/packages")} className={secondaryClass}>{readOnly ? "返回" : "取消"}</button>{!readOnly && <button onClick={save} className={primaryClass}>{isNew ? "创建套餐" : "保存修改"}</button>}</div></div>
   </div>;
 }
 

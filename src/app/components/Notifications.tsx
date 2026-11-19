@@ -175,16 +175,16 @@ export function Notifications() {
   };
 
   return (
-    <div className="p-8 space-y-4">
+    <div className="space-y-4 p-4 sm:p-6 lg:p-8">
 
       {/* Filter bar */}
-      <div className="flex items-center gap-2">
-        <div className="relative">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative w-full sm:w-auto">
           <Search className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="搜索标题 / 内容"
-            className="h-9 pl-8 pr-3 w-52 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+            className="h-9 pl-8 pr-3 w-full sm:w-52 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
           />
         </div>
         <Sel value={fStatus} onChange={(v) => setFStatus(v as "" | NotifStatus)}>
@@ -201,12 +201,12 @@ export function Notifications() {
       </div>
 
       {/* Display guidance + auto-save interval */}
-      <div className="flex h-12 items-center gap-4 rounded-lg bg-stone-100 px-4">
-        <div className="flex min-w-0 items-center gap-2 text-sm text-[#6B7280]">
-          <Info className="size-4 shrink-0 text-stone-400" />
-          <span className="truncate">只有已发布且在展示时间内的通知会出现在小程序首页，按优先级从高到低轮播。</span>
+      <div className="flex flex-col items-start gap-2 rounded-lg bg-stone-100 px-4 py-2.5 sm:h-12 sm:flex-row sm:items-center sm:gap-4 sm:py-0">
+        <div className="flex min-w-0 items-start gap-2 text-sm text-[#6B7280] sm:items-center">
+          <Info className="mt-0.5 size-4 shrink-0 text-stone-400 sm:mt-0" />
+          <span className="sm:truncate">只有已发布且在展示时间内的通知会出现在小程序首页，按优先级从高到低轮播。</span>
         </div>
-        <div className="ml-auto flex shrink-0 items-center gap-2 text-sm text-[#6B7280]">
+        <div className="flex shrink-0 items-center gap-2 text-sm text-[#6B7280] sm:ml-auto">
           <span>切换间隔</span>
           <div className="flex h-8 w-[120px] items-center overflow-hidden rounded-lg bg-white">
             <button type="button" disabled={bannerInterval <= 1} onClick={() => changeInterval(bannerInterval - 1)} className="h-full w-9 text-base text-stone-500 hover:bg-stone-50 disabled:opacity-35">−</button>
@@ -218,8 +218,8 @@ export function Notifications() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+      {/* Table: scrolls sideways on narrow screens, with 操作 pinned on the right */}
+      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden"><div className="overflow-x-auto"><div className="min-w-[780px]">
         {/* Header */}
         <div className="grid grid-cols-[minmax(0,1fr)_100px_80px_230px_180px] px-4 py-2.5 bg-stone-50 border-b border-stone-100 text-xs text-stone-500">
           <div>标题</div><div>状态</div><div>优先级</div><div>展示时间范围</div><div className="sticky right-0 bg-stone-50 text-right">操作</div>
@@ -272,7 +272,7 @@ export function Notifications() {
             </div>
           </div>
         ))}
-      </div>
+      </div></div></div>
 
       {/* Modals */}
       {modal.kind === "edit" && (
@@ -358,7 +358,7 @@ function NotifModal({ initial, onClose, onSubmit }: {
             className={inp(errors.content, isArchived) + " h-auto py-2 resize-none"} />
         </MF>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <MF label="状态">
             <Sel value={v.status} onChange={(val) => set("status", val as NotifStatus)} disabled={isArchived} full>
               <option value="草稿">草稿</option>
@@ -388,8 +388,8 @@ function NotifModal({ initial, onClose, onSubmit }: {
           </MF>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <MF label="发布时间">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <MF label="发布时间" className="col-span-2 sm:col-span-1">
             <DateField ariaLabel="发布时间" value={v.publishedAt?.slice(0,10) ?? ""} disabled={isArchived}
               onChange={(day) => set("publishedAt", day)} />
           </MF>
@@ -504,9 +504,9 @@ function Sel({ value, onChange, children, full, disabled }: {
   );
 }
 
-function MF({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+function MF({ label, error, className, children }: { label: string; error?: string; className?: string; children: React.ReactNode }) {
   return (
-    <label className="block">
+    <label className={`block min-w-0 ${className ?? ""}`}>
       <span className="text-xs text-stone-600">{label}</span>
       <div className="mt-1">{children}</div>
       {error && <div className="text-xs text-rose-600 mt-1">{error}</div>}
