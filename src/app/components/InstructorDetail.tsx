@@ -18,6 +18,7 @@ import { useStore } from "../store-context";
 import type { ClassSession } from "./data";
 import { Button } from "./ui/button";
 import { DateRangePicker } from "./DatePicker";
+import { SelectMenu } from "./SelectMenu";
 
 type Tab = "近期排课" | "历史课程" | "操作记录";
 
@@ -131,7 +132,7 @@ export function InstructorDetail({ instructorId }: { instructorId: string }) {
         {tab === "近期排课" && <>
           <div className="flex flex-wrap items-center gap-3 border-b border-stone-100 px-6 py-4">
             <DateRangePicker direction="upcoming" ariaLabel="排课日期范围" from={dateFrom} to={dateTo} onChange={(from, to) => { setDateFrom(from); setDateTo(to); setPage(1); }} />
-            <select aria-label="课程类型" value={courseType} onChange={(event) => { setCourseType(event.target.value); setPage(1); }} className="h-9 rounded-lg border border-stone-200 bg-white px-3 text-sm outline-none focus:border-emerald-500"><option>全部</option><option>团课</option><option>私教</option></select>
+            <SelectMenu aria-label="课程类型" value={courseType} onValueChange={(value) => { setCourseType(value); setPage(1); }} className="h-9"><option>全部</option><option>团课</option><option>私教</option></SelectMenu>
             {(dateFrom || dateTo || courseType !== "全部") && <Button variant="ghost" className="h-9 text-stone-500" onClick={() => { setDateFrom(""); setDateTo(""); setCourseType("全部"); setPage(1); }}>重置</Button>}
           </div>
           <SessionTable sessions={visibleUpcoming} classNameOf={classNameOf} formatOf={formatOf} bookedOf={bookedOf} onView={openEditSession} empty="暂无符合条件的近期排课" />

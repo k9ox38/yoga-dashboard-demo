@@ -6,6 +6,7 @@ import type { BookingEligibility } from "../store";
 import { useStore } from "../store-context";
 import { MemberCardDrawer } from "./MemberCardDrawer";
 import { DateField } from "./DatePicker";
+import { SelectMenu } from "./SelectMenu";
 
 function makeEmpty(): ClassSession {
   return {
@@ -94,12 +95,11 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
         {/* Body */}
         <div className="overflow-y-auto px-6 py-5 space-y-5 flex-1">
           <Field label="选择课程" error={errors.classId}>
-            <select value={values.classId} onChange={(e) => set("classId", e.target.value)} className={inputCls(errors.classId)}>
-              <option value="">— 请选择 —</option>
+            <SelectMenu value={values.classId} onValueChange={(v) => set("classId", v)} placeholder="请选择课程" aria-invalid={!!errors.classId} className={inputCls(errors.classId)}>
               {templates.map((t) => (
                 <option key={t.id} value={t.id}>{t.name} · {t.format} · {t.level}</option>
               ))}
-            </select>
+            </SelectMenu>
           </Field>
 
           {template && (
@@ -110,11 +110,11 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
           )}
 
           <Field label="教练">
-            <select value={values.instructor} onChange={(e) => set("instructor", e.target.value)} className={inputCls()}>
+            <SelectMenu value={values.instructor} onValueChange={(v) => set("instructor", v)} placeholder="请选择教练" className={inputCls()}>
               {instructors.filter((i) => i.status === "启用").map((i) => (
                 <option key={i.id} value={i.name}>{i.name}　{i.phone}</option>
               ))}
-            </select>
+            </SelectMenu>
           </Field>
 
           <div className="grid grid-cols-[1.4fr_1fr_1fr] gap-4">

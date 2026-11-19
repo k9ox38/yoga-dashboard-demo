@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
-import { RefreshCw, Upload, Zap, X, ChevronDown, Eraser, Eye, Link2, FileText } from "lucide-react";
+import { RefreshCw, Upload, Zap, X, Eraser, Eye, Link2, FileText } from "lucide-react";
 import { demoReconRecords, ordersRefFromDemo, type DemoReconRecord } from "../lib/demoCommerce";
 import { localDateTime } from "../lib/dates";
 import { DateRangePicker } from "./DatePicker";
+import { SelectMenu } from "./SelectMenu";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -493,13 +494,9 @@ function Sel({ value, onChange, children, full }: {
   value: string; onChange: (v: string) => void; children: React.ReactNode; full?: boolean;
 }) {
   return (
-    <div className={`relative ${full ? "w-full" : ""}`}>
-      <select value={value} onChange={(e) => onChange(e.target.value)}
-        className={`${full ? "w-full" : ""} h-9 pl-3 pr-8 rounded-lg border border-stone-200 bg-white text-sm text-stone-700 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500`}>
-        {children}
-      </select>
-      <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-    </div>
+    <SelectMenu value={value} onValueChange={onChange} className={`text-stone-700 ${full ? "w-full" : ""}`}>
+      {children}
+    </SelectMenu>
   );
 }
 

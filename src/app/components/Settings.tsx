@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus, X, Upload, Pencil, Trash2, ChevronRight, GripVertical } from "lucide-react";
 import { localDate } from "../lib/dates";
+import { SelectMenu } from "./SelectMenu";
 
 type Tab = "brand" | "booking" | "package" | "points" | "homepage" | "advanced";
 
@@ -167,10 +168,10 @@ function PackageSection() {
             <div className="text-sm text-stone-900">私教课包预约即扣</div>
             <div className="text-xs text-stone-500 mt-0.5">开启后，私教课成功预约即扣课时；关闭则签到后才扣。</div>
           </div>
-          <select defaultValue="true" className="h-9 px-3 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500">
+          <SelectMenu defaultValue="true" aria-label="私教课包扣课时机" className="h-9 shrink-0">
             <option value="true">预约即扣</option>
             <option value="false">签到后扣</option>
-          </select>
+          </SelectMenu>
         </div>
         <div className="border-t border-stone-100" />
         <NumericRule

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Trash2 } from "lucide-react";
 import type { ClassTemplate, ClassFormat, Level } from "./data";
+import { SelectMenu } from "./SelectMenu";
 
 const LEVELS: Level[] = ["初级", "中级", "高级"];
 const FORMATS: ClassFormat[] = ["团课", "私教"];
@@ -72,9 +73,9 @@ export function ClassModal({ open, mode, initial, onClose, onSubmit, onDelete }:
           </Field>
 
           <Field label="难度">
-            <select value={values.level} onChange={(e) => set("level", e.target.value as Level)} className={inputCls()}>
+            <SelectMenu value={values.level} onValueChange={(v) => set("level", v as Level)} className={inputCls()}>
               {LEVELS.map((l) => <option key={l}>{l}</option>)}
-            </select>
+            </SelectMenu>
           </Field>
 
           <Field label="授课形式">

@@ -5,6 +5,7 @@ import { useStore } from "../store-context";
 import type { Member, MemberCard, PackageProduct, PackageStatus, PackageType } from "./data";
 import { localDate } from "../lib/dates";
 import { computePackCardStatus, type PackCardStatus } from "../lib/cardStatus";
+import { SelectMenu } from "./SelectMenu";
 
 type CardStatus = PackCardStatus;
 type UserCard = MemberCard & { memberId: string; memberName: string; memberPhone: string; product: PackageProduct };
@@ -269,7 +270,7 @@ function Modal({ title, subtitle, onClose, children }: { title: string; subtitle
   return <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 p-4" onMouseDown={onClose}><div role="dialog" aria-modal="true" aria-label={title} className="w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-xl" onMouseDown={(event) => event.stopPropagation()}><div className="flex items-start justify-between border-b border-stone-200 px-5 py-4"><div><div className="font-semibold text-stone-900">{title}</div>{subtitle && <div className="mt-1 text-xs text-stone-500">{subtitle}</div>}</div><button onClick={onClose} aria-label="关闭" className="flex size-8 items-center justify-center rounded-lg hover:bg-stone-100"><X className="size-4" /></button></div>{children}</div></div>;
 }
 function ModalFooter({ onClose, onConfirm, label }: { onClose: () => void; onConfirm: () => void; label: string }) { return <div className="flex justify-end gap-2 border-t border-stone-200 bg-stone-50 px-5 py-3"><button onClick={onClose} className={secondaryClass}>取消</button><button onClick={onConfirm} className={primaryClass}>{label}</button></div>; }
-function SimpleSelect({ value, onChange, options, ariaLabel }: { value: string; onChange: (value: string) => void; options: [string, string][]; ariaLabel: string }) { return <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={ariaLabel} className={inputClass}>{options.map(([value, label]) => <option key={value || "all"} value={value}>{label}</option>)}</select>; }
+function SimpleSelect({ value, onChange, options, ariaLabel }: { value: string; onChange: (value: string) => void; options: [string, string][]; ariaLabel: string }) { return <SelectMenu value={value} onValueChange={onChange} aria-label={ariaLabel} className={inputClass}>{options.map(([value, label]) => <option key={value || "all"} value={value}>{label}</option>)}</SelectMenu>; }
 function InfoBar({ children }: { children: ReactNode }) { return <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><Info className="size-4 shrink-0" />{children}</div>; }
 function Badge({ className, children }: { className: string; children: ReactNode }) { return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs ${className}`}>{children}</span>; }
 function Notice({ children }: { children: ReactNode }) { return <div role="status" className="flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="size-4" />{children}</div>; }

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { X, Trash2, Plus } from "lucide-react";
 import type { Instructor } from "./data";
+import { SelectMenu } from "./SelectMenu";
 
 const PRESET_SPECIALTIES = [
   "哈他", "流瑜伽", "阴瑜伽", "阿斯汤加",
@@ -186,10 +187,10 @@ export function InstructorModal({ open, mode, initial, onClose, onSubmit, onDele
           </Field>
 
           <Field label="状态">
-            <select value={values.status} onChange={(e) => set("status", e.target.value as Instructor["status"])} className={inputCls()}>
+            <SelectMenu value={values.status} onValueChange={(v) => set("status", v as Instructor["status"])} className={inputCls()}>
               <option value="启用">启用</option>
               <option value="禁用">禁用</option>
-            </select>
+            </SelectMenu>
           </Field>
         </div>
 

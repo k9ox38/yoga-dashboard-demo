@@ -3,6 +3,7 @@ import { Camera, Mail, Phone, Shield, Clock, Key, LogOut, Check } from "lucide-r
 import { addDaysFromToday } from "../lib/dates";
 import { readSession } from "../lib/auth";
 import { LogoutDialog } from "../components/LogoutDialog";
+import { SelectMenu } from "../components/SelectMenu";
 
 type Tab = "info" | "security" | "preferences";
 
@@ -209,9 +210,9 @@ function Select({ label, value, options }: { label: string; value: string; optio
   return (
     <label className="block">
       <span className="text-xs text-stone-600">{label}</span>
-      <select defaultValue={value} className="mt-1 w-full h-9 px-3 rounded-lg border border-stone-200 bg-stone-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
+      <SelectMenu defaultValue={value} className="mt-1 h-9 w-full bg-stone-50">
         {options.map((o) => <option key={o}>{o}</option>)}
-      </select>
+      </SelectMenu>
     </label>
   );
 }

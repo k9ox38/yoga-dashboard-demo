@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
-import { RefreshCw, X, ChevronDown, Eye, Shield, Activity, Users, Layers } from "lucide-react";
+import { RefreshCw, X, Eye, Shield, Activity, Users, Layers } from "lucide-react";
 import { DateRangePicker } from "./DatePicker";
 import { buildSeedNotices } from "./Notifications";
 import { addDaysFromToday, shiftLocalDateTime } from "../lib/dates";
+import { SelectMenu } from "./SelectMenu";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -370,13 +371,9 @@ function Badge({ cls, children }: { cls: string; children: React.ReactNode }) {
 
 function Sel({ value, onChange, children }: { value: string; onChange: (v: string) => void; children: React.ReactNode }) {
   return (
-    <div className="relative">
-      <select value={value} onChange={(e) => onChange(e.target.value)}
-        className="h-9 pl-3 pr-8 rounded-lg border border-stone-200 bg-white text-sm text-stone-700 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500">
-        {children}
-      </select>
-      <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-    </div>
+    <SelectMenu value={value} onValueChange={onChange} className="text-stone-700">
+      {children}
+    </SelectMenu>
   );
 }
 

@@ -117,3 +117,9 @@ Fixed along the way:
 - **How the demo sign-in works:** it is checked in the browser only (`lib/auth.ts`, tested in `lib/__tests__/auth.test.ts`). The session is kept in sessionStorage, or in localStorage for 7 days with 自动登录. If storage is blocked, it is kept in memory for the tab.
 - **Demo data survives sign-out:** the data now lives above the router, so edits made in the demo are kept when you sign out and back in within the same tab.
 - **管理员资料 › 最近登录:** the first row is now the current session's real sign-in time.
+
+## Dropdowns
+
+- Every single-choice dropdown now opens an in-app list (`SelectMenu`) instead of the operating system's menu: white panel, rounded corners, the current choice tinted green with a check, and a hover highlight. Long lists scroll inside a 320px panel.
+- The closed control keeps the width of its longest option, as before. Required pickers in forms (学员, 课程, 教练) show a grey placeholder until something is chosen.
+- Escape closes only the open list, not the dialog or drawer around it. Keyboard use (arrows, Enter, type-to-jump) works as with a native select.

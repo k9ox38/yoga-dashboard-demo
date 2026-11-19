@@ -23,6 +23,7 @@ import type { ClassSession, ClassTemplate, Member, Reservation } from "./data";
 import { localDate } from "../lib/dates";
 import { computeMonthlyStatus } from "../lib/cardStatus";
 import { MemberCardDrawer, type MemberPackagePreset } from "./MemberCardDrawer";
+import { SelectMenu } from "./SelectMenu";
 
 type MemberRecord = Member;
 type ReservationRow = {
@@ -58,9 +59,9 @@ function SimpleSelect({ value, onChange, options, optionLabels, ariaLabel, class
   name?: string;
 }) {
   return (
-    <select name={name} aria-label={ariaLabel} value={value} onChange={(event) => onChange(event.target.value)} className={`h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 ${className}`}>
+    <SelectMenu name={name} aria-label={ariaLabel} value={value} onValueChange={onChange} className={`h-10 rounded-md border-slate-200 text-slate-700 ${className}`}>
       {options.map((option) => <option key={option} value={option}>{optionLabels?.[option] ?? option}</option>)}
-    </select>
+    </SelectMenu>
   );
 }
 

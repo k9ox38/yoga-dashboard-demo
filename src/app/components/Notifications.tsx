@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
-import { Search, RefreshCw, Plus, Edit3, Eye, X, Info, ChevronDown, Send, Archive } from "lucide-react";
+import { Search, RefreshCw, Plus, Edit3, Eye, X, Info, Send, Archive } from "lucide-react";
 import { addDaysFromToday, localDate, localDateTime, parseLocalDate, shiftLocalDateTime } from "../lib/dates";
 import { DateField } from "./DatePicker";
+import { SelectMenu } from "./SelectMenu";
 
 /* ─── Types ──────────────────────────────────────── */
 
@@ -494,13 +495,10 @@ function Sel({ value, onChange, children, full, disabled }: {
   value: string; onChange: (v: string) => void; children: React.ReactNode; full?: boolean; disabled?: boolean;
 }) {
   return (
-    <div className={`relative ${full ? "w-full" : ""}`}>
-      <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}
-        className={`${full ? "w-full" : ""} h-9 pl-3 pr-8 rounded-lg border border-stone-200 bg-white text-sm text-stone-700 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 disabled:bg-stone-50 disabled:text-stone-400 disabled:cursor-default`}>
-        {children}
-      </select>
-      <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-    </div>
+    <SelectMenu value={value} onValueChange={onChange} disabled={disabled}
+      className={`text-stone-700 disabled:cursor-default disabled:bg-stone-50 disabled:text-stone-400 disabled:opacity-100 ${full ? "w-full" : ""}`}>
+      {children}
+    </SelectMenu>
   );
 }
 
