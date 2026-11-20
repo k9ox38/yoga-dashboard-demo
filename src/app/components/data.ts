@@ -2,7 +2,6 @@ import { addDaysFromToday, localDate } from "../lib/dates";
 import { computeMonthlyStatus } from "../lib/cardStatus";
 
 export type ClassFormat = "团课" | "私教";
-export type Level = "初级" | "中级" | "高级";
 export type PackageType = "class_pack" | "pass";
 export type PackageStatus = "上架中" | "已下架";
 export type CardKind = "monthly" | "private";
@@ -46,7 +45,8 @@ export type ClassTemplate = {
   id: string;
   name: string;
   description: string;
-  level: Level;
+  /** Default difficulty, 1–5 stars; a scheduled class starts from it. */
+  difficulty: number;
   format: ClassFormat;
   capacity: number;
 };
@@ -60,6 +60,7 @@ export type ClassSession = {
   start: string;
   end: string;
   booked: number;
+  /** This class's difficulty, 1–5 stars, starting from the course's default. */
   difficulty: number;
   isVisible: boolean;
 };
@@ -132,14 +133,14 @@ export type InstructorActivity = {
 const addDays = (n: number) => addDaysFromToday(n);
 
 export const classTemplates: ClassTemplate[] = [
-  { id: "t1", name: "晨间流动", description: "动态节奏，激活全身能量，适合开启一天。", level: "中级", format: "团课", capacity: 20 },
-  { id: "t2", name: "舒缓基础", description: "注重呼吸与体式对位，适合初学者入门。", level: "初级", format: "团课", capacity: 15 },
-  { id: "t3", name: "深度放松", description: "慢节奏拉伸，配合引导冥想，深度修复。", level: "初级", format: "团课", capacity: 18 },
-  { id: "t4", name: "进阶强化", description: "传统风格，挑战体能与专注，适合有经验学员。", level: "高级", format: "团课", capacity: 16 },
-  { id: "t5", name: "空中吊绳", description: "借助吊床完成体式与倒立，增强核心与柔韧。", level: "初级", format: "团课", capacity: 10 },
-  { id: "t6", name: "产前产后", description: "专为孕期与产后妈妈设计的温和练习课程。", level: "初级", format: "团课", capacity: 12 },
-  { id: "t7", name: "力量塑形", description: "高强度练习，塑形与心肺并重，燃脂高效。", level: "中级", format: "团课", capacity: 22 },
-  { id: "t8", name: "一对一私教", description: "根据学员目标定制的私人课程，针对性强。", level: "初级", format: "私教", capacity: 1 },
+  { id: "t1", name: "晨间流动", description: "动态节奏，激活全身能量，适合开启一天。", difficulty: 3, format: "团课", capacity: 20 },
+  { id: "t2", name: "舒缓基础", description: "注重呼吸与体式对位，适合初学者入门。", difficulty: 1, format: "团课", capacity: 15 },
+  { id: "t3", name: "深度放松", description: "慢节奏拉伸，配合引导冥想，深度修复。", difficulty: 2, format: "团课", capacity: 18 },
+  { id: "t4", name: "进阶强化", description: "传统风格，挑战体能与专注，适合有经验学员。", difficulty: 5, format: "团课", capacity: 16 },
+  { id: "t5", name: "空中吊绳", description: "借助吊床完成体式与倒立，增强核心与柔韧。", difficulty: 2, format: "团课", capacity: 10 },
+  { id: "t6", name: "产前产后", description: "专为孕期与产后妈妈设计的温和练习课程。", difficulty: 1, format: "团课", capacity: 12 },
+  { id: "t7", name: "力量塑形", description: "高强度练习，塑形与心肺并重，燃脂高效。", difficulty: 4, format: "团课", capacity: 22 },
+  { id: "t8", name: "一对一私教", description: "根据学员目标定制的私人课程，针对性强。", difficulty: 2, format: "私教", capacity: 1 },
 ];
 
 export const classSessions: ClassSession[] = [

@@ -1,5 +1,6 @@
 import type { ClassSession, ClassTemplate } from "../components/data";
 import { parseLocalDate } from "./dates";
+import { difficultyLabel } from "./difficulty";
 
 /** The week's classes as they appear on the exported timetable image. */
 
@@ -20,7 +21,8 @@ export type ScheduleImageItem = {
   end: string;
   name: string;
   format: string;
-  level: string;
+  /** The class's own difficulty, as a word (入门 … 高级). */
+  difficulty: string;
   instructor: string;
   room: string;
   booked: number;
@@ -69,7 +71,7 @@ export function buildScheduleWeek(dates: string[], sessions: ClassSession[], tem
           end: session.end,
           name: template?.name ?? "未关联课程",
           format: template?.format ?? "",
-          level: template?.level ?? "",
+          difficulty: difficultyLabel(session.difficulty),
           instructor: session.instructor,
           room: session.room,
           booked: session.booked,

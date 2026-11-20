@@ -136,3 +136,9 @@ Fixed along the way:
 - The image has one column per day (周一–周日) and one card per class: time, course, coach · room, 团课/私教 · level, and seats taken (已约 18/20, or 已满). Each course keeps the same colour as in the week view. Days with no classes say 暂无课程.
 - Classes hidden from members (对用户可见 off) are left out, so the picture matches what members see. The preview says how many were left out.
 - Drawn directly on a canvas (`lib/renderScheduleImage.ts`), so no new dependency and no screenshot of the page. If the Noto Sans SC web font can't load, the system Chinese font is used after at most about a second.
+
+## Difficulty
+
+- Courses and scheduled classes now share one difficulty scale: 1–5 stars, named 入门 / 初级 / 中级 / 进阶 / 高级. Before, a course was 初级/中级/高级 while the 排课 drawer showed stars labelled 非常简单 … 非常困难, so the two pages could disagree.
+- This follows the API: a course has a default difficulty (`courses.difficulty`) and each class has its own (`course_sessions.difficulty`). A new class starts at its course's default, and choosing another course in the 排课 drawer brings that course's difficulty with it. If a class is set differently, the drawer says so and offers 恢复默认.
+- The course list, the 排课 list, the dashboard, search results and the exported timetable image all use the same stars or words.

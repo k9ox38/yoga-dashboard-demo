@@ -112,7 +112,7 @@ function drawCard(ctx: Ctx, item: ScheduleImageItem, x: number, y: number) {
   const seats = full ? "已满" : item.capacity ? `已约 ${item.booked}/${item.capacity}` : "";
   ctx.font = font(full ? 600 : 400, 12);
   const seatsWidth = seats ? ctx.measureText(seats).width + 8 : 0;
-  text(ctx, [item.format, item.level].filter(Boolean).join(" · "), left, y + 96, { font: font(500, 12), color: palette.sub, max: inner - seatsWidth });
+  text(ctx, [item.format, item.difficulty].filter(Boolean).join(" · "), left, y + 96, { font: font(500, 12), color: palette.sub, max: inner - seatsWidth });
   if (seats) text(ctx, seats, x + COL - 12, y + 96, { font: font(full ? 600 : 400, 12), color: full ? "#e11d48" : STONE[500], align: "right" });
 }
 
@@ -153,7 +153,7 @@ export async function renderScheduleImage(
   const height = Math.ceil(footerTop + 18 + 18 + 40);
 
   const strings = [brand, "课程表", week.rangeLabel, generatedAt, "生成于课程安排以小程序实时信息为准共节已满约暂无0123456789/–·…",
-    ...week.days.flatMap((day) => [day.weekday, ...day.items.flatMap((item) => [item.name, item.instructor, item.room, item.format, item.level])])].join("");
+    ...week.days.flatMap((day) => [day.weekday, ...day.items.flatMap((item) => [item.name, item.instructor, item.room, item.format, item.difficulty])])].join("");
   await loadFonts(strings);
 
   let scale = 2;

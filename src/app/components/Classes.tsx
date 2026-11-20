@@ -1,5 +1,6 @@
 import type { ClassTemplate } from "./data";
 import { Edit3, CalendarPlus, Users } from "lucide-react";
+import { DifficultyStars } from "./Difficulty";
 
 const formatGradient: Record<string, string> = {
   团课: "from-emerald-400 to-teal-600",
@@ -33,7 +34,7 @@ export function Classes({ templates, sessionCounts, onEdit, onSchedule }: Props)
               <div className="text-stone-900">{c.name}</div>
               <p className="text-xs text-stone-600 mt-1 line-clamp-2 flex-1">{c.description || "暂无描述"}</p>
               <div className="mt-3 flex items-center gap-3 text-xs text-stone-500">
-                <span className="px-2 py-0.5 rounded bg-stone-100">{c.level}</span>
+                <DifficultyStars value={c.difficulty} />
                 <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {c.capacity}</span>
                 <span className="ml-auto">{sessionCounts[c.id] ?? 0} 节排课</span>
               </div>

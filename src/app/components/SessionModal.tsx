@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Trash2, Star, Eye, EyeOff, Users, Plus, Search, CheckCircle2 } from "lucide-react";
+import { X, Trash2, Eye, EyeOff, Users, Plus, Search, CheckCircle2 } from "lucide-react";
 import type { ClassSession, ClassTemplate, Instructor, Member, Reservation } from "./data";
 import { ROOMS } from "./data";
 import type { BookingEligibility } from "../store";
@@ -8,7 +8,9 @@ import { MemberCardDrawer } from "./MemberCardDrawer";
 import { DateField } from "./DatePicker";
 import { SelectMenu } from "./SelectMenu";
 import { TimeField } from "./TimeField";
+import { DifficultyInput } from "./Difficulty";
 import { durationMinutes, formatDuration, shiftEnd } from "../lib/time";
+import { DEFAULT_DIFFICULTY, difficultyLabel } from "../lib/difficulty";
 
 function makeEmpty(): ClassSession {
   return {
@@ -20,7 +22,7 @@ function makeEmpty(): ClassSession {
     start: "09:00",
     end: "10:00",
     booked: 0,
-    difficulty: 3,
+    difficulty: DEFAULT_DIFFICULTY,
     isVisible: true,
   };
 }
@@ -42,15 +44,20 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
 
   useEffect(() => {
     if (!open) return;
-    if (initial) {
+    const defaultFor = (classId: string) => templates.find((t) => t.id === classId)?.difficulty ?? DEFAULT_DIFFICULTY;
+    if (initial?.id) {
       setValues({
         ...initial,
         instructor: initial.instructor || instructors[0]?.name || "",
-        difficulty:  initial.difficulty  ?? 3,
+        difficulty:  initial.difficulty  ?? defaultFor(initial.classId),
         isVisible:   initial.isVisible   ?? true,
       });
+    } else if (initial) {
+      // A new class opened from a course, a day or a coach starts at the course's difficulty.
+      setValues({ ...initial, instructor: initial.instructor || instructors[0]?.name || "", difficulty: defaultFor(initial.classId), isVisible: true });
     } else {
-      setValues({ ...makeEmpty(), classId: templates[0]?.id ?? "", instructor: instructors[0]?.name ?? "" });
+      const classId = templates[0]?.id ?? "";
+      setValues({ ...makeEmpty(), classId, instructor: instructors[0]?.name ?? "", difficulty: defaultFor(classId) });
     }
     setErrors({});
   }, [open, initial, templates, instructors]);
@@ -98,9 +105,13 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
         {/* Body */}
         <div className="overflow-y-auto px-6 py-5 space-y-5 flex-1">
           <Field label="选择课程" error={errors.classId}>
-            <SelectMenu value={values.classId} onValueChange={(v) => set("classId", v)} placeholder="请选择课程" aria-invalid={!!errors.classId} className={inputCls(errors.classId)}>
+            <SelectMenu
+              value={values.classId}
+              // Choosing another course brings that course's difficulty with it.
+              onValueChange={(classId) => setValues((p) => ({ ...p, classId, difficulty: templates.find((t) => t.id === classId)?.difficulty ?? p.difficulty }))}
+              placeholder="请选择课程" aria-invalid={!!errors.classId} className={inputCls(errors.classId)}>
               {templates.map((t) => (
-                <option key={t.id} value={t.id}>{t.name} · {t.format} · {t.level}</option>
+                <option key={t.id} value={t.id}>{t.name} · {t.format} · {difficultyLabel(t.difficulty)}</option>
               ))}
             </SelectMenu>
           </Field>
@@ -108,7 +119,7 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
           {template && (
             <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-900 space-y-0.5">
               <div>{template.description || "暂无描述"}</div>
-              <div className="opacity-80">难度 {template.level} · 容量 {template.capacity} 人 · {template.format}</div>
+              <div className="opacity-80">容量 {template.capacity} 人 · {template.format}</div>
             </div>
           )}
 
@@ -138,27 +149,21 @@ export function SessionModal({ open, mode, initial, templates, instructors, onCl
 
           <div>
             <div className="text-xs text-stone-600 mb-2">难度</div>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => set("difficulty", n)}
-                  className="p-0.5 rounded transition-transform hover:scale-110"
-                >
-                  <Star
-                    className={`w-6 h-6 transition-colors ${
-                      n <= values.difficulty
-                        ? "fill-amber-400 text-amber-400"
-                        : "fill-stone-100 text-stone-300"
-                    }`}
-                  />
-                </button>
-              ))}
-              <span className="ml-2 text-xs text-stone-400">
-                {["", "非常简单", "简单", "适中", "有挑战", "非常困难"][values.difficulty]}
-              </span>
-            </div>
+            <DifficultyInput value={values.difficulty} onChange={(difficulty) => set("difficulty", difficulty)} />
+            {template && (
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-2 text-xs text-stone-500">
+                {values.difficulty === template.difficulty ? (
+                  <span>与课程默认难度一致</span>
+                ) : (
+                  <>
+                    <span>本节已调整，课程默认为 {template.difficulty} 星 · {difficultyLabel(template.difficulty)}</span>
+                    <button type="button" onClick={() => set("difficulty", template.difficulty)} className="text-xs font-normal text-emerald-700 hover:underline">
+                      恢复默认
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between rounded-lg border border-stone-200 px-4 py-3">

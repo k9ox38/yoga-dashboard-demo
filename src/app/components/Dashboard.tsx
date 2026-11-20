@@ -4,6 +4,7 @@ import { AreaChart, Area, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tool
 import { weeklyBookings } from "./data";
 import { useStore } from "../store-context";
 import { localDate } from "../lib/dates";
+import { difficultyLabel } from "../lib/difficulty";
 import { computeMonthlyStatus } from "../lib/cardStatus";
 import { buildMonthlyRevenue, currentMonthPaidRevenue, demoOrders } from "../lib/demoCommerce";
 import { AT_RISK_DAYS, atRiskMembers, recentlyActiveMembers } from "../lib/reportMetrics";
@@ -168,7 +169,7 @@ export function Dashboard() {
                         </span>
                       )}
                     </div>
-                    <div className="truncate text-xs text-stone-500">{s.instructor} · {s.room}{t ? ` · ${t.level}` : ""}</div>
+                    <div className="truncate text-xs text-stone-500">{s.instructor} · {s.room} · {difficultyLabel(s.difficulty)}</div>
                   </div>
                   <div className="w-full sm:w-40 sm:shrink-0">
                     <div className="flex items-center justify-between text-xs text-stone-600 mb-1">

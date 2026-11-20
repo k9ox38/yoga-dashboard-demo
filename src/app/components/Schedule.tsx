@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Plus, Download, Star, EyeOff, Users, LayoutGrid, List } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Download, EyeOff, Users, LayoutGrid, List } from "lucide-react";
 import type { ClassSession, ClassTemplate } from "./data";
 import { ScheduleExportDialog } from "./ScheduleExportDialog";
+import { DifficultyStars } from "./Difficulty";
 import { buildScheduleWeek, paletteIndex } from "../lib/scheduleImage";
 import { addDays } from "../lib/dates";
 
@@ -69,16 +70,6 @@ function timeToTop(start: string): number {
 function timeToDurationHeight(start: string, end: string): number {
   const dur = timeToMinutes(end) - timeToMinutes(start);
   return Math.max(36, (dur / 60) * HOUR_PX);
-}
-
-function Stars({ value }: { value: number }) {
-  return (
-    <span className="flex items-center gap-0.5">
-      {[1,2,3,4,5].map(n => (
-        <Star key={n} className={`w-3 h-3 ${n <= value ? "fill-amber-400 text-amber-400" : "fill-stone-100 text-stone-200"}`} />
-      ))}
-    </span>
-  );
 }
 
 const formatBadge: Record<string, string> = {
@@ -529,7 +520,7 @@ export function Schedule({ sessions, templates, onEdit, onCreate }: Props) {
                       <div className="text-sm text-stone-900 font-semibold mb-1.5 truncate">{t?.name ?? "未关联课程"}</div>
                       <div className="flex items-center gap-3 flex-wrap">
                         <span className="text-xs text-stone-500">{s.instructor}</span>
-                        <Stars value={s.difficulty ?? 0} />
+                        <DifficultyStars value={s.difficulty} />
                         {t && (
                           <span className={`text-xs px-2 py-0.5 rounded-full ${formatBadge[t.format] ?? "bg-stone-100 text-stone-500"}`}>
                             {t.format}

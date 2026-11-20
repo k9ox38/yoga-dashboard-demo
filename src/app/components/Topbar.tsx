@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bell, BookOpen, CheckCheck, Menu, Plus, Search, UserRound, Users, X } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useStore } from "../store-context";
+import { difficultyLabel } from "../lib/difficulty";
 
 const initialNotifications = [
   { id: "n1", title: "苏晴 月卡将于 3 天后到期", time: "10 分钟前", read: false },
@@ -90,7 +91,7 @@ export function Topbar({ title, subtitle, primaryLabel, onPrimary, onMenu, navOp
                     {memberResults.map((member) => <ResultItem key={member.id} title={member.name} subtitle={member.phone} onClick={() => choose("/members", { memberId: member.id, searchAt: Date.now() })} />)}
                   </ResultGroup>
                   <ResultGroup title="课程" icon={BookOpen}>
-                    {courseResults.map((course) => <ResultItem key={course.id} title={course.name} subtitle={`${course.format} · ${course.level}`} onClick={() => choose("/classes")} />)}
+                    {courseResults.map((course) => <ResultItem key={course.id} title={course.name} subtitle={`${course.format} · ${difficultyLabel(course.difficulty)}`} onClick={() => choose("/classes")} />)}
                   </ResultGroup>
                   <ResultGroup title="教练" icon={UserRound}>
                     {instructorResults.map((instructor) => <ResultItem key={instructor.id} title={instructor.name} subtitle={instructor.specialty.join(" · ")} onClick={() => choose(`/instructors/${instructor.id}`)} />)}

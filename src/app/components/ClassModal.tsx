@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { X, Trash2 } from "lucide-react";
-import type { ClassTemplate, ClassFormat, Level } from "./data";
-import { SelectMenu } from "./SelectMenu";
+import type { ClassTemplate, ClassFormat } from "./data";
+import { DifficultyInput } from "./Difficulty";
+import { DEFAULT_DIFFICULTY } from "../lib/difficulty";
 
-const LEVELS: Level[] = ["初级", "中级", "高级"];
 const FORMATS: ClassFormat[] = ["团课", "私教"];
 
 const empty: ClassTemplate = {
   id: "",
   name: "",
   description: "",
-  level: "初级",
+  difficulty: DEFAULT_DIFFICULTY,
   format: "团课",
   capacity: 15,
 };
@@ -72,11 +72,14 @@ export function ClassModal({ open, mode, initial, onClose, onSubmit, onDelete }:
             <textarea value={values.description} onChange={(e) => set("description", e.target.value)} rows={3} placeholder="简要介绍课程内容、强度与适合人群" className={inputCls() + " h-auto py-2 resize-none"} />
           </Field>
 
-          <Field label="难度">
-            <SelectMenu value={values.level} onValueChange={(v) => set("level", v as Level)} className={inputCls()}>
-              {LEVELS.map((l) => <option key={l}>{l}</option>)}
-            </SelectMenu>
-          </Field>
+          {/* Not wrapped in <label>: a label would pass clicks on its text to the first star. */}
+          <div>
+            <div className="text-xs text-stone-600">默认难度</div>
+            <div className="mt-1">
+              <DifficultyInput label="默认难度" value={values.difficulty} onChange={(difficulty) => set("difficulty", difficulty)} />
+            </div>
+            <div className="mt-1 text-xs text-stone-500">排课时自动带入，可按单节课调整</div>
+          </div>
 
           <Field label="授课形式">
             <div className="flex gap-2">
