@@ -142,3 +142,11 @@ Fixed along the way:
 - Courses and scheduled classes now share one difficulty scale: 1–5 stars, named 入门 / 初级 / 中级 / 进阶 / 高级. Before, a course was 初级/中级/高级 while the 排课 drawer showed stars labelled 非常简单 … 非常困难, so the two pages could disagree.
 - This follows the API: a course has a default difficulty (`courses.difficulty`) and each class has its own (`course_sessions.difficulty`). A new class starts at its course's default, and choosing another course in the 排课 drawer brings that course's difficulty with it. If a class is set differently, the drawer says so and offers 恢复默认.
 - The course list, the 排课 list, the dashboard, search results and the exported timetable image all use the same stars or words.
+
+## Coaches
+
+- Removed coach ratings for now: the 评分 figure on each coach card and the 平均评分 box at the top of the page.
+- The coach numbers are now worked out from the schedule instead of being made up:
+  - 累计学员人次 on each card (was 累计学员, a fixed placeholder) adds up the bookings across all of the coach's classes, the way the real coach report counts 学员数. A member who comes three times counts three times.
+  - 本周课程 and 本周授课节数 count only this week's classes (Monday to Sunday). Before, they counted every class on the schedule, including next week's.
+  - 本月授课学员人次 adds up this month's bookings (was a fixed 486 with a made-up "较上月 +8.2%").

@@ -6,11 +6,11 @@ import {
   GraduationCap,
   Phone,
   Search,
-  Star,
   UsersRound,
 } from "lucide-react";
 import type { Instructor } from "./data";
 import { useStore } from "../store-context";
+import { coachMetrics, coachTeamTotals } from "../lib/coachMetrics";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
@@ -26,14 +26,6 @@ const avatarColors = [
   "from-violet-300 to-purple-600",
   "from-rose-300 to-pink-600",
 ];
-
-function instructorMetrics(instructor: Instructor, index: number) {
-  const seed = instructor.name.charCodeAt(0) + index;
-  return {
-    students: 168 + (seed % 7) * 37,
-    rating: (4.6 + (seed % 4) * 0.1).toFixed(1),
-  };
-}
 
 export function Instructors({ instructors, onEdit }: Props) {
   const { sessions } = useStore();
@@ -54,19 +46,18 @@ export function Instructors({ instructors, onEdit }: Props) {
   }), [instructors, search, specialty, status]);
 
   const enabledNames = new Set(instructors.filter((instructor) => instructor.status === "启用").map((instructor) => instructor.name));
-  const weeklySessions = sessions.filter((session) => enabledNames.has(session.instructor)).length;
+  const team = coachTeamTotals(enabledNames, sessions);
   const stats = [
     { label: "在职教练数", value: String(enabledNames.size), sub: `共 ${instructors.length} 位教练`, icon: UsersRound, accent: "bg-emerald-600" },
-    { label: "本周授课节数", value: String(weeklySessions), sub: "按当前排课统计", icon: CalendarCheck, accent: "bg-teal-500" },
-    { label: "本月授课学员人次", value: "486", sub: "较上月 +8.2%", icon: GraduationCap, accent: "bg-amber-500" },
-    { label: "平均评分", value: "4.8", sub: "近 30 天课程评价", icon: Star, accent: "bg-sky-500" },
+    { label: "本周授课节数", value: String(team.weekClasses), sub: "本周一至周日的排课", icon: CalendarCheck, accent: "bg-teal-500" },
+    { label: "本月授课学员人次", value: String(team.monthVisits), sub: "本月课程的预约人次", icon: GraduationCap, accent: "bg-amber-500" },
   ];
 
   return (
     <div className="space-y-5 p-4 sm:p-5 lg:p-8">
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         {stats.map(({ label, value, sub, icon: Icon, accent }) => (
-          <div key={label} className="flex min-w-0 items-start gap-3 rounded-xl border border-stone-200 bg-white p-4 sm:gap-4 sm:p-5">
+          <div key={label} className="flex min-w-0 items-start max-lg:last:col-span-2 gap-3 rounded-xl border border-stone-200 bg-white p-4 sm:gap-4 sm:p-5">
             <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${accent}`}><Icon className="size-4 text-white" /></div>
             <div className="min-w-0"><div className="text-xs text-stone-500">{label}</div><div className="mt-0.5 text-xl text-stone-900">{value}</div><div className="mt-0.5 text-xs text-stone-400">{sub}</div></div>
           </div>
@@ -101,8 +92,7 @@ export function Instructors({ instructors, onEdit }: Props) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.map((instructor) => {
             const sourceIndex = instructors.findIndex((item) => item.id === instructor.id);
-            const metrics = instructorMetrics(instructor, sourceIndex);
-            const instructorSessions = sessions.filter((session) => session.instructor === instructor.name);
+            const metrics = coachMetrics(instructor.name, sessions);
             return (
               <article
                 key={instructor.id}
@@ -119,10 +109,9 @@ export function Instructors({ instructors, onEdit }: Props) {
                 </div>
                 <div className="mt-4 line-clamp-2 min-h-10 text-sm leading-5 text-stone-600">{instructor.bio || "暂无简介"}</div>
                 <div className="mt-4 flex min-h-7 flex-wrap gap-1.5"><SpecialtyTags tags={instructor.specialty} max={4} /></div>
-                <div className="mt-5 grid grid-cols-3 divide-x divide-stone-100 border-t border-stone-100 pt-4 text-center">
-                  <Metric value={String(instructorSessions.length)} label="本周课程" />
-                  <Metric value={String(metrics.students)} label="累计学员" />
-                  <Metric value={metrics.rating} label="评分" suffix={<Star className="size-3 fill-amber-400 text-amber-400" />} />
+                <div className="mt-5 grid grid-cols-2 divide-x divide-stone-100 border-t border-stone-100 pt-4 text-center">
+                  <Metric value={String(metrics.weekClasses)} label="本周课程" />
+                  <Metric value={String(metrics.studentVisits)} label="累计学员人次" />
                 </div>
               </article>
             );
@@ -134,8 +123,8 @@ export function Instructors({ instructors, onEdit }: Props) {
   );
 }
 
-function Metric({ value, label, suffix }: { value: string; label: string; suffix?: React.ReactNode }) {
-  return <div><div className="flex items-center justify-center gap-1 text-sm font-medium text-stone-800">{value}{suffix}</div><div className="mt-1 text-[11px] text-stone-400">{label}</div></div>;
+function Metric({ value, label }: { value: string; label: string }) {
+  return <div><div className="text-sm font-medium text-stone-800">{value}</div><div className="mt-1 text-[11px] text-stone-400">{label}</div></div>;
 }
 
 export function SpecialtyTags({ tags, max = 4 }: { tags: string[]; max?: number }) {

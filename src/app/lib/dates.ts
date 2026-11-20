@@ -21,6 +21,13 @@ export function addDaysFromToday(days: number, today: Date = new Date()): string
   return addDays(localDate(today), days);
 }
 
+/** The Monday-to-Sunday week that contains the given day. */
+export function weekRange(dateStr: string): { from: string; to: string } {
+  const offset = (parseLocalDate(dateStr).getDay() + 6) % 7;
+  const from = addDays(dateStr, -offset);
+  return { from, to: addDays(from, 6) };
+}
+
 /** Inclusive day difference: expiry - from. 0 means same calendar day. */
 export function daysBetween(fromDate: string, toDate: string): number {
   const from = parseLocalDate(fromDate);
